@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>人生大哉問</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;600&family=Noto+Sans+TC:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="header-brand">
+        <h1 class="logo">人生大哉問</h1>
+        <p class="tagline">探索生命最深邃的問題</p>
+      </div>
+      <div class="header-actions">
+        <div class="search-box">
+          <span class="search-icon">⌕</span>
+          <input type="text" id="searchInput" placeholder="搜尋問題..." autocomplete="off">
+        </div>
+        <button class="btn-primary" id="addBtn">＋ 新增</button>
+        <button class="btn-icon" id="settingsBtn" title="設定">⚙</button>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <h3 class="sidebar-heading">分類</h3>
+        <nav id="categoryNav"></nav>
+        <div class="sidebar-bottom">
+          <div id="aiStatus" class="ai-status inactive">
+            <span class="dot"></span>
+            <span>AI 功能未啟用</span>
+          </div>
+        </div>
+      </aside>
+
+      <main class="main">
+        <div class="main-toolbar">
+          <h2 id="currentTitle">全部問答</h2>
+          <div class="view-toggle">
+            <button class="toggle-btn active" id="btnGrid" onclick="setView('grid')" title="格狀">⊞</button>
+            <button class="toggle-btn" id="btnList" onclick="setView('list')" title="清單">☰</button>
+          </div>
+        </div>
+        <div id="qaGrid" class="qa-grid"></div>
+        <div id="emptyMsg" class="empty" style="display:none">
+          <div class="empty-symbol">◇</div>
+          <p>此分類尚無問答</p>
+          <button class="btn-primary" id="emptyAddBtn">新增第一個問答</button>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- View Modal -->
+  <div id="viewModal" class="overlay" style="display:none" onclick="closeView()">
+    <div class="modal modal-lg" onclick="event.stopPropagation()">
+      <button class="close-btn" onclick="closeView()">✕</button>
+      <div id="vmCategory" class="modal-category"></div>
+      <h2 id="vmQuestion" class="modal-question"></h2>
+      <div id="vmAnswer" class="modal-answer"></div>
+      <div class="modal-footer">
+        <span id="vmDate" class="modal-date"></span>
+        <div class="modal-footer-actions">
+          <button class="btn-secondary" id="vmEdit">編輯</button>
+          <button class="btn-danger" id="vmDelete">刪除</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div id="editModal" class="overlay" style="display:none" onclick="closeEdit()">
+    <div class="modal modal-md" onclick="event.stopPropagation()">
+      <button class="close-btn" onclick="closeEdit()">✕</button>
+      <h2 id="editTitle" class="modal-title">新增問答</h2>
+      <div class="form-group">
+        <label>問題</label>
+        <textarea id="fQuestion" rows="3" placeholder="輸入你的人生大哉問..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>分類</label>
+        <select id="fCategory">
+          <option>存在與意義</option>
+          <option>幸福與快樂</option>
+          <option>愛與關係</option>
+          <option>死亡與無常</option>
+          <option>自我與認同</option>
+          <option>道德與倫理</option>
+          <option>心經與智慧</option>
+          <option>其他</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="label-with-action">
+          <span>答案</span>
+          <button id="aiBtn" class="ai-pill" onclick="generateAI()">✦ AI 生成</button>
+        </label>
+        <div id="aiLoading" class="ai-loading" style="display:none">
+          <span class="loading-dot"></span>AI 思考中...
+        </div>
+        <textarea id="fAnswer" rows="9" placeholder="輸入答案，或點選 AI 生成..."></textarea>
+      </div>
+      <div class="form-actions">
+        <button class="btn-secondary" onclick="closeEdit()">取消</button>
+        <button class="btn-primary" onclick="saveQA()">儲存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settingsModal" class="overlay" style="display:none" onclick="closeSettings()">
+    <div class="modal modal-sm" onclick="event.stopPropagation()">
+      <button class="close-btn" onclick="closeSettings()">✕</button>
+      <h2 class="modal-title">設定</h2>
+      <div class="settings-block">
+        <h3>AI 功能</h3>
+        <p class="settings-desc">輸入 Claude API 金鑰以啟用 AI 生成答案。需搭配本地伺服器使用。</p>
+        <label>Anthropic API 金鑰</label>
+        <input type="password" id="sApiKey" placeholder="sk-ant-...">
+        <div class="code-block">
+          <p>啟動本地伺服器：</p>
+          <code>python server.py</code>
+          <p>然後至 <strong>http://localhost:8080</strong> 開啟本應用</p>
+        </div>
+      </div>
+      <div class="settings-block">
+        <h3>資料管理</h3>
+        <div class="settings-actions">
+          <button class="btn-secondary" onclick="exportData()">匯出 JSON</button>
+          <button class="btn-danger" onclick="resetData()">重置為預設資料</button>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-primary" onclick="saveSettings()">儲存設定</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
