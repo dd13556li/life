@@ -21,7 +21,7 @@ class Handler(SimpleHTTPRequestHandler):
         self.end_headers()
 
     def do_POST(self):
-        if self.path != '/api/ai':
+        if self.path not in ('/api/ai', '/api/chat'):
             self.send_error(404)
             return
 
@@ -33,45 +33,64 @@ class Handler(SimpleHTTPRequestHandler):
             self.send_error(400, 'Invalid JSON')
             return
 
+        if self.path == '/api/ai':
+            self._handle_ai(data)
+        else:
+            self._handle_chat(data)
+
+    def _handle_ai(self, data):
         api_key = data.get('api_key', '').strip()
         question = data.get('question', '').strip()
-
         if not api_key:
-            self._json(400, {'error': '請提供 API 金鑰'})
-            return
+            self._json(400, {'error': '請提供 API 金鑰'}); return
         if not question:
-            self._json(400, {'error': '請提供問題'})
-            return
+            self._json(400, {'error': '請提供問題'}); return
 
-        payload = json.dumps({
+        payload = {
             'model': 'claude-haiku-4-5-20251001',
-            'max_tokens': 1500,
-            'messages': [{
-                'role': 'user',
-                'content': (
-                    f'請用繁體中文，深入且富有洞察力地回答這個人生問題：\n\n{question}\n\n'
-                    '請從哲學、心理學、或人文視角提供思考，約300至400字。'
-                    '語氣溫暖而有深度，引用相關哲學家或研究時請自然融入。'
-                    '不要使用標題，以流暢的段落呈現。'
-                )
-            }]
-        }).encode('utf-8')
+            'max_tokens': 2500,
+            'messages': [{'role': 'user', 'content': (
+                f'請用繁體中文，深入且富有洞察力地回答這個人生問題：\n\n{question}\n\n'
+                '請嚴格按照以下 JSON 格式回應（不要輸出任何其他內容）：\n\n'
+                '{\n'
+                '  "answer": "主要答案，從哲學、心理學、或人文視角提供思考，約300至400字。語氣溫暖而有深度，引用相關哲學家或研究時請自然融入。不要使用標題，以流暢的段落呈現。",\n'
+                '  "science": "科學驗證，100至150字。引用相關心理學、神經科學、或社會科學研究，用繁體中文說明這個哲學洞見的實證基礎。",\n'
+                '  "practice": "今日實踐，60至100字。一個今天就可以做的具體行動，要有操作性和可執行性，讓人讀完後知道如何立刻嘗試。"\n'
+                '}'
+            )}]
+        }
+        self._call_anthropic(api_key, payload, lambda r: {'answer': r['content'][0]['text']})
 
+    def _handle_chat(self, data):
+        api_key = data.get('api_key', '').strip()
+        messages = data.get('messages', [])
+        system = data.get('system', '')
+        if not api_key:
+            self._json(400, {'error': '請提供 API 金鑰'}); return
+        if not messages:
+            self._json(400, {'error': '請提供對話內容'}); return
+
+        payload = {
+            'model': 'claude-haiku-4-5-20251001',
+            'max_tokens': 800,
+            'system': system,
+            'messages': messages[-10:],
+        }
+        self._call_anthropic(api_key, payload, lambda r: {'reply': r['content'][0]['text']})
+
+    def _call_anthropic(self, api_key, payload, extract_fn):
         req = urllib.request.Request(
             'https://api.anthropic.com/v1/messages',
-            data=payload,
+            data=json.dumps(payload, ensure_ascii=False).encode('utf-8'),
             headers={
                 'x-api-key': api_key,
                 'anthropic-version': '2023-06-01',
                 'content-type': 'application/json',
             }
         )
-
         try:
             with urllib.request.urlopen(req, timeout=30) as resp:
-                result = json.loads(resp.read())
-                answer = result['content'][0]['text']
-                self._json(200, {'answer': answer})
+                self._json(200, extract_fn(json.loads(resp.read())))
         except urllib.error.HTTPError as e:
             err_body = e.read().decode('utf-8', errors='replace')
             print(f'  Anthropic API 錯誤 {e.code}: {err_body}')

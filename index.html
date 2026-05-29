@@ -17,19 +17,59 @@
         <p class="tagline">探索生命最深邃的問題</p>
       </div>
       <div class="header-actions">
+        <button class="btn-icon sidebar-toggle-btn" id="sidebarToggleBtn" onclick="toggleSidebar()" title="選單">☰</button>
         <div class="search-box">
           <span class="search-icon">⌕</span>
-          <input type="text" id="searchInput" placeholder="搜尋問題..." autocomplete="off">
+          <input type="text" id="searchInput" placeholder="搜尋或輸入人名..." autocomplete="off">
+          <div id="searchDropdown" class="search-dropdown" style="display:none"></div>
         </div>
         <button class="btn-primary" id="addBtn">＋ 新增</button>
+        <div id="readProgressBadge" class="read-progress-badge" title="閱讀進度"></div>
         <button class="btn-icon" id="settingsBtn" title="設定">⚙</button>
       </div>
     </header>
 
     <div class="layout">
-      <aside class="sidebar">
+      <div id="sidebarBackdrop" class="sidebar-backdrop" onclick="closeSidebar()"></div>
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-level-filter">
+          <button class="level-filter-btn active" id="lvlAll" onclick="setLevelFilter(0)">全部</button>
+          <button class="level-filter-btn level-1" id="lvl1" onclick="setLevelFilter(1)">L1 基礎</button>
+          <button class="level-filter-btn level-2" id="lvl2" onclick="setLevelFilter(2)">L2 深化</button>
+          <button class="level-filter-btn level-3" id="lvl3" onclick="setLevelFilter(3)">L3 整合</button>
+        </div>
         <h3 class="sidebar-heading">分類</h3>
         <nav id="categoryNav"></nav>
+        <div class="sidebar-journal">
+          <button class="cat-btn journal-nav-btn" id="journalNavBtn" onclick="showJournalView()">
+            <span class="cat-icon">✎</span>
+            <span class="cat-label">反思日誌</span>
+            <span class="cat-count" id="journalCount">0</span>
+          </button>
+        </div>
+        <div class="sidebar-srs">
+          <button class="cat-btn srs-nav-btn" id="srsNavBtn" onclick="showSRSView()">
+            <span class="cat-icon">📅</span>
+            <span class="cat-label">今日複習</span>
+            <span class="cat-count" id="srsBadge">0</span>
+          </button>
+          <button class="cat-btn srs-stats-nav-btn" id="srsStatsNavBtn" onclick="showSRSStats()">
+            <span class="cat-icon">◎</span>
+            <span class="cat-label">精熟統計</span>
+          </button>
+          <button class="cat-btn growth-nav-btn" id="growthNavBtn" onclick="showGrowthMap()">
+            <span class="cat-icon">◈</span>
+            <span class="cat-label">成長地圖</span>
+          </button>
+          <button class="cat-btn chat-nav-btn" id="chatNavBtn" onclick="showChatView()">
+            <span class="cat-icon">◯</span>
+            <span class="cat-label">AI 對話</span>
+          </button>
+        </div>
+        <div class="sidebar-paths">
+          <div class="sidebar-heading" style="margin-top:14px;">學習路徑</div>
+          <div id="pathsNav"></div>
+        </div>
         <div class="sidebar-bottom">
           <div id="aiStatus" class="ai-status inactive">
             <span class="dot"></span>
@@ -46,7 +86,8 @@
             <button class="toggle-btn" id="btnList" onclick="setView('list')" title="清單">☰</button>
           </div>
         </div>
-        <div id="qaGrid" class="qa-grid"></div>
+        <div id="todayRec" class="today-rec" style="display:none" onclick="openView(todayRecId)"></div>
+      <div id="qaGrid" class="qa-grid"></div>
         <div id="emptyMsg" class="empty" style="display:none">
           <div class="empty-symbol">◇</div>
           <p>此分類尚無問答</p>
@@ -60,9 +101,48 @@
   <div id="viewModal" class="overlay" style="display:none" onclick="closeView()">
     <div class="modal modal-lg" onclick="event.stopPropagation()">
       <button class="close-btn" onclick="closeView()">✕</button>
+      <div id="vmPathNav" class="path-nav" style="display:none">
+        <button class="path-nav-btn" id="vmPathPrev" onclick="pathNavStep(-1)">← 上一張</button>
+        <span id="vmPathInfo" class="path-nav-info"></span>
+        <button class="path-nav-btn" id="vmPathNext" onclick="pathNavStep(1)">下一張 →</button>
+      </div>
       <div id="vmCategory" class="modal-category"></div>
       <h2 id="vmQuestion" class="modal-question"></h2>
       <div id="vmAnswer" class="modal-answer"></div>
+      <div id="vmScience" class="modal-section" style="display:none">
+        <div class="modal-section-label">⚗ 科學視角</div>
+        <div id="vmScienceContent" class="modal-section-content"></div>
+      </div>
+      <div id="vmPractice" class="modal-section" style="display:none">
+        <div class="modal-section-label practice">◈ 今日實踐</div>
+        <div id="vmPracticeContent" class="modal-section-content practice"></div>
+        <button id="vmPracticeBtn" class="btn-practice-check" onclick="markCardPracticed(state.viewingId)">◉ 今天我做了這個練習（共 0 天）</button>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-label journal">✎ 我的反思</div>
+        <div id="vmJournalList"></div>
+        <textarea id="vmJournalInput" class="journal-textarea" rows="3" placeholder="寫下今天讀到這篇之後的想法、感受或觀察..."></textarea>
+        <button class="btn-journal-save" onclick="saveJournalEntry()">記錄反思</button>
+        <div style="clear:both"></div>
+      </div>
+      <div class="modal-section srs-section">
+        <div class="modal-section-label" style="color:#7fa8d4">📅 間隔複習</div>
+        <div id="vmSRSInfo" class="srs-info"></div>
+        <button id="vmSRSAdd" class="btn-srs-add" onclick="addToSRS(state.viewingId)">＋ 加入複習計畫</button>
+        <div id="vmSRSRate" class="srs-rate-row" style="display:none">
+          <button class="srs-btn again" onclick="updateSRS(state.viewingId,1)">🔴 又忘了</button>
+          <button class="srs-btn hard" onclick="updateSRS(state.viewingId,2)">🟡 有印象</button>
+          <button class="srs-btn good" onclick="updateSRS(state.viewingId,3)">🟢 記得了</button>
+          <button class="srs-btn easy" onclick="updateSRS(state.viewingId,4)">⭐ 很熟悉</button>
+        </div>
+      </div>
+      <div class="modal-section chat-start-section">
+        <button class="btn-chat-start" onclick="startChatFromCard(state.viewingId)">◯ 與 AI 深入討論這個問題</button>
+      </div>
+      <div id="vmRelated" class="modal-related" style="display:none">
+        <div class="modal-section-label" style="color:var(--gold-dim)">◈ 相關探索</div>
+        <div id="vmRelatedCards" class="related-cards-row"></div>
+      </div>
       <div class="modal-footer">
         <span id="vmDate" class="modal-date"></span>
         <div class="modal-footer-actions">
@@ -92,8 +172,18 @@
           <option>自我與認同</option>
           <option>道德與倫理</option>
           <option>心經與智慧</option>
+          <option>苦難與療癒</option>
+          <option>知行合一</option>
           <option>其他</option>
         </select>
+      </div>
+      <div class="form-group">
+        <label><span>科學視角</span> <span class="label-optional">（選填）</span></label>
+        <textarea id="fScience" rows="3" placeholder="相關研究、實驗或科學根據..."></textarea>
+      </div>
+      <div class="form-group">
+        <label><span>今日實踐</span> <span class="label-optional">（選填）</span></label>
+        <textarea id="fPractice" rows="3" placeholder="具體可操作的日常練習建議..."></textarea>
       </div>
       <div class="form-group">
         <label class="label-with-action">
@@ -132,8 +222,13 @@
         <h3>資料管理</h3>
         <div class="settings-actions">
           <button class="btn-secondary" onclick="exportData()">匯出 JSON</button>
+          <label class="btn-secondary" style="cursor:pointer">
+            匯入 JSON
+            <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(this)">
+          </label>
           <button class="btn-danger" onclick="resetData()">重置為預設資料</button>
         </div>
+        <p class="settings-desc" style="margin-top:10px">匯入的卡片將合併到現有資料中（已存在的 ID 不會被覆蓋）。</p>
       </div>
       <div class="form-actions">
         <button class="btn-primary" onclick="saveSettings()">儲存設定</button>
