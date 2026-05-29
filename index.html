@@ -241,6 +241,19 @@
         <p class="settings-desc" style="margin-top:10px">個人筆記包含反思日誌、實踐打卡與閱讀記錄，以 Markdown 格式匯出。個人資料備份包含日誌、閱讀歷史與 SRS 資料。</p>
       </div>
       <div class="settings-block">
+        <h3>Google Drive 雲端備份</h3>
+        <p class="settings-desc">將日誌、閱讀記錄與 SRS 資料備份至 Google Drive，無需帳號系統。<br>
+          需先至 <a href="https://console.cloud.google.com/" target="_blank" style="color:var(--gold-dim)">Google Cloud Console</a> 建立 OAuth 用戶端 ID，並將 <code>http://localhost:8080</code> 加入「已授權的 JavaScript 來源」。</p>
+        <label>OAuth 用戶端 ID（Client ID）</label>
+        <input type="text" id="sGoogleClientId" placeholder="xxxx.apps.googleusercontent.com">
+        <div class="settings-actions" style="margin-top:10px">
+          <button class="btn-secondary" id="sDriveAuthBtn" onclick="authorizeGoogleDrive()">連接 Google Drive</button>
+          <button class="btn-secondary" id="sDriveBackupBtn" onclick="backupToGoogleDrive()" disabled>備份到 Drive</button>
+          <button class="btn-secondary" id="sDriveRestoreBtn" onclick="restoreFromGoogleDrive()" disabled>從 Drive 還原</button>
+        </div>
+        <div id="sDriveStatus" class="settings-desc" style="margin-top:8px"></div>
+      </div>
+      <div class="settings-block">
         <h3>每日複習提醒</h3>
         <p class="settings-desc">開啟後，每次進入 App 時若有待複習卡片，將顯示瀏覽器通知（每天至多一次）。</p>
         <button class="btn-secondary" id="sNotifyBtn" onclick="enableNotifications()">🔔 啟用每日複習提醒</button>

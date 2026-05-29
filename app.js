@@ -3949,7 +3949,7 @@ let state = {
   editingId: null,
   viewingId: null,
   viewMode: 'grid',
-  settings: { apiKey: '' },
+  settings: { apiKey: '', googleClientId: '' },
 };
 
 // ── Storage helpers ────────────────────────────────────────────
@@ -4601,6 +4601,10 @@ async function generateAI() {
 // ── Settings modal ─────────────────────────────────────────────
 function openSettings() {
   document.getElementById('sApiKey').value = state.settings.apiKey || '';
+  document.getElementById('sGoogleClientId').value = state.settings.googleClientId || '';
+  if (state.settings.googleClientId) {
+    document.getElementById('sDriveAuthBtn').textContent = '重新授權';
+  }
   document.getElementById('settingsModal').style.display = 'flex';
   lockScroll(true);
 }
@@ -4612,6 +4616,7 @@ function closeSettings() {
 
 function saveSettings() {
   state.settings.apiKey = document.getElementById('sApiKey').value.trim();
+  state.settings.googleClientId = document.getElementById('sGoogleClientId').value.trim();
   saveSettingsToStorage();
   updateAIStatus();
   closeSettings();
@@ -5602,6 +5607,142 @@ function buildRadarSVG(catStats, color = '#c9a84c') {
   }).join('');
 
   return `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" class="srs-radar-svg">${gridLines}${axisLines}${dataPoly}${dots}${labels}${gridLabels}</svg>`;
+}
+
+// ── Google Drive Backup ───────────────────────────────────────
+let gDriveToken = null;
+const DRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.appdata';
+const DRIVE_FILES = 'https://www.googleapis.com/drive/v3/files';
+const DRIVE_UPLOAD = 'https://www.googleapis.com/upload/drive/v3/files';
+
+function loadGIS() {
+  return new Promise((resolve, reject) => {
+    if (window.google?.accounts?.oauth2) { resolve(); return; }
+    const s = document.createElement('script');
+    s.src = 'https://accounts.google.com/gsi/client';
+    s.onload = resolve;
+    s.onerror = () => reject(new Error('無法載入 Google Identity Services'));
+    document.head.appendChild(s);
+  });
+}
+
+async function authorizeGoogleDrive() {
+  const clientId = (document.getElementById('sGoogleClientId').value.trim()) || state.settings.googleClientId;
+  if (!clientId) {
+    alert('請先輸入 Google OAuth 用戶端 ID。\n\n設定步驟：\n1. 前往 Google Cloud Console\n2. APIs & Services → Credentials\n3. 建立 OAuth 2.0 用戶端 ID（Web application）\n4. 將 http://localhost:8080 加入「已授權的 JavaScript 來源」\n5. 複製用戶端 ID 貼入此處');
+    return;
+  }
+  try {
+    setDriveStatus('載入 Google 授權模組…', 'info');
+    await loadGIS();
+    const client = google.accounts.oauth2.initTokenClient({
+      client_id: clientId,
+      scope: DRIVE_SCOPE,
+      callback: resp => {
+        if (resp.error) { setDriveStatus('授權失敗：' + resp.error, 'error'); return; }
+        gDriveToken = resp.access_token;
+        state.settings.googleClientId = clientId;
+        saveSettingsToStorage();
+        document.getElementById('sDriveBackupBtn').disabled = false;
+        document.getElementById('sDriveRestoreBtn').disabled = false;
+        document.getElementById('sDriveAuthBtn').textContent = '重新授權';
+        setDriveStatus('已連接 Google Drive ✓', 'ok');
+      },
+    });
+    client.requestAccessToken();
+  } catch (err) {
+    setDriveStatus('載入失敗：' + err.message, 'error');
+  }
+}
+
+async function backupToGoogleDrive() {
+  if (!gDriveToken) { alert('請先點擊「連接 Google Drive」完成授權。'); return; }
+  const today = new Date().toISOString().slice(0, 10);
+  const filename = `人生大哉問_備份_${today}.json`;
+  const body = JSON.stringify({
+    exportDate: today, version: '1.0',
+    journal: state.journal,
+    readHistory: state.readHistory,
+    srsData: state.srsData,
+    chatMessages: state.chatMessages,
+  }, null, 2);
+
+  try {
+    setDriveStatus('備份中…', 'info');
+    const auth = { Authorization: `Bearer ${gDriveToken}` };
+
+    // Check if today's file already exists
+    const list = await fetch(
+      `${DRIVE_FILES}?spaces=appDataFolder&q=name%3D'${encodeURIComponent(filename)}'&fields=files(id)`,
+      { headers: auth }
+    ).then(r => r.json());
+
+    const existing = list.files?.[0];
+    if (existing) {
+      await fetch(`${DRIVE_UPLOAD}/${existing.id}?uploadType=media`, {
+        method: 'PATCH',
+        headers: { ...auth, 'Content-Type': 'application/json' },
+        body,
+      });
+    } else {
+      const meta = JSON.stringify({ name: filename, parents: ['appDataFolder'] });
+      const form = new FormData();
+      form.append('metadata', new Blob([meta], { type: 'application/json' }));
+      form.append('file', new Blob([body], { type: 'application/json' }));
+      await fetch(`${DRIVE_UPLOAD}?uploadType=multipart`, {
+        method: 'POST', headers: auth, body: form,
+      });
+    }
+    setDriveStatus(`備份成功：${filename} ✓`, 'ok');
+  } catch (err) {
+    setDriveStatus('備份失敗：' + err.message, 'error');
+  }
+}
+
+async function restoreFromGoogleDrive() {
+  if (!gDriveToken) { alert('請先點擊「連接 Google Drive」完成授權。'); return; }
+  try {
+    setDriveStatus('讀取備份列表…', 'info');
+    const auth = { Authorization: `Bearer ${gDriveToken}` };
+    const list = await fetch(
+      `${DRIVE_FILES}?spaces=appDataFolder&orderBy=createdTime%20desc&fields=files(id,name)&pageSize=10`,
+      { headers: auth }
+    ).then(r => r.json());
+
+    const files = list.files || [];
+    if (!files.length) { setDriveStatus('找不到任何備份。請先執行備份。', 'info'); return; }
+
+    const options = files.map((f, i) => `${i + 1}. ${f.name}`).join('\n');
+    const choice = prompt(`選擇要還原的備份（輸入編號）：\n\n${options}`);
+    const idx = parseInt(choice) - 1;
+    if (isNaN(idx) || idx < 0 || idx >= files.length) return;
+
+    setDriveStatus('下載中…', 'info');
+    const backup = await fetch(
+      `${DRIVE_FILES}/${files[idx].id}?alt=media`,
+      { headers: auth }
+    ).then(r => r.json());
+
+    if (!backup.journal || !backup.readHistory) throw new Error('備份格式不正確');
+    if (!confirm(`確定要還原「${files[idx].name}」？\n目前的日誌（${state.journal.length} 條）和閱讀記錄將被覆蓋。`)) return;
+
+    state.journal = backup.journal;
+    state.readHistory = backup.readHistory;
+    state.srsData = backup.srsData || {};
+    state.chatMessages = backup.chatMessages || [];
+    saveJournalStorage(); saveReadHistory(); saveSRSData(); saveChatMessages();
+    updateJournalCount(); updateProgressBadge(); renderSRSBadge(); renderGrid();
+    setDriveStatus(`還原成功：${files[idx].name} ✓`, 'ok');
+  } catch (err) {
+    setDriveStatus('還原失敗：' + err.message, 'error');
+  }
+}
+
+function setDriveStatus(msg, type) {
+  const el = document.getElementById('sDriveStatus');
+  if (!el) return;
+  el.textContent = msg;
+  el.style.color = type === 'error' ? 'var(--danger)' : type === 'ok' ? '#5dba7e' : 'var(--text-muted)';
 }
 
 // ── Notifications ─────────────────────────────────────────────
