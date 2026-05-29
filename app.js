@@ -4735,6 +4735,10 @@ function getFiltered() {
       const catB = CATEGORY_ORDER[b.category] ?? 99;
       if (catA !== catB) return catA - catB;
     }
+    // 依層次排序：L1（根源/入門）在前，L2 深化、L3 整合在後
+    const la = getCardLevel(a);
+    const lb = getCardLevel(b);
+    if (la !== lb) return la - lb;
     const ao = a.order ?? 9999;
     const bo = b.order ?? 9999;
     if (ao !== bo) return ao - bo;
