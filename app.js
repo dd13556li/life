@@ -5782,6 +5782,88 @@ function buildRadarSVG(catStats, color = '#c9a84c') {
 // ── 30-Day Action Plan ────────────────────────────────────────
 let planSelectedDay = 1;
 
+// 精選範本：手工編寫的完整 30 天計畫，隨時可用、無需 AI
+const PLAN_TEMPLATES = [
+  {
+    id: 'mindfulness',
+    title: '正念 30 天',
+    icon: '☯',
+    intro: '從呼吸覺察到慈心，循序建立屬於你的正念練習',
+    theme: '正念',
+    days: [
+      { focus: '呼吸錨定', action: '找一個安靜的地方坐下，閉上眼睛，只是觀察呼吸的進與出，數到十次。不改變呼吸，只是注意它。' },
+      { focus: '身體掃描', action: '躺下，從腳趾到頭頂，依序把注意力帶到身體每個部位，純粹感受，不評判。約 10 分鐘。' },
+      { focus: '呼吸空檔', action: '今天設三個提醒，每次響起就停下來，做三個有意識的深呼吸，問自己：我現在正在做什麼？' },
+      { focus: '感官著陸', action: '用 5-4-3-2-1 練習：說出看到的 5 樣、聽到的 4 種聲音、觸到的 3 種、聞到的 2 種、嘗到的 1 種。' },
+      { focus: '觀察念頭', action: '坐 5 分鐘，把念頭想像成天空飄過的雲。不抓住、不推開，只是看著它們來去。' },
+      { focus: '單一任務', action: '選一件日常事（刷牙、走路），全程只做這件事，不同時做別的。分心時，溫柔地把注意力拉回。' },
+      { focus: '第一週回顧', action: '寫下這週你注意到的一個關於自己心智的發現。不需深刻，誠實就好。' },
+      { focus: '正念進食', action: '一餐的前三口，放下手機，專注感受食物的味道、口感與溫度。' },
+      { focus: '正念行走', action: '走路時，感受腳掌與地面接觸的每一步。把通勤的路變成一段練習。' },
+      { focus: '正念聆聽', action: '與人對話時，完全聽對方說，不在心裡準備你的回應。只是聽。' },
+      { focus: '暫停呼吸', action: '今天在一個你通常會自動反應的時刻（塞車、排隊），改成先做一次深呼吸。' },
+      { focus: '正念家務', action: '洗碗或整理時，感受水溫、動作與聲音。把例行公事變成一場小冥想。' },
+      { focus: '螢幕覺察', action: '今天每次拿起手機前，先停一秒問：我現在真正想做的是什麼？' },
+      { focus: '第二週回顧', action: '哪一個日常時刻，因為帶著覺察而變得不一樣了？寫下來。' },
+      { focus: '命名情緒', action: '今天當情緒升起，在心裡說：「這是______。」命名本身，就會降低它的強度。' },
+      { focus: 'RAIN 練習', action: '對一個困難情緒，依序：認出(Recognize)、允許(Allow)、探究(Investigate)、滋養(Nurture)。' },
+      { focus: '情緒的身體', action: '情緒來時，問：它在我身體的哪裡？胸口？喉嚨？只是觀察那個感受，不需解決。' },
+      { focus: '不評判', action: '今天練習對一件你慣常批判的事（自己的拖延、他人的習慣）只觀察、不評論。' },
+      { focus: '與不適共處', action: '當輕微的不舒服升起（無聊、煩躁），不立刻逃開，試著陪它待 30 秒。' },
+      { focus: '慈心起步', action: '對自己默念：願我平安，願我自在。然後把這份祝福，擴及一個你愛的人。' },
+      { focus: '第三週回顧', action: '這週你與哪一種情緒的關係，開始有了一點點不同？' },
+      { focus: '開放覺察', action: '坐 5 分鐘，不專注任何特定對象，只是覺察當下升起的一切聲音、感受與念頭。' },
+      { focus: 'STOP 暫停', action: 'Stop 停下、Take a breath 呼吸、Observe 觀察、Proceed 繼續。今天有意識地用它三次。' },
+      { focus: '感恩覺察', action: '今天注意三件你平常視為理所當然的小事，真切地感受它們的存在。' },
+      { focus: '正念溝通', action: '在一次對話中，說話前先呼吸一次，讓回應從覺察而非反射而來。' },
+      { focus: '與身體同在', action: '今天每隔幾小時，花 30 秒檢查身體：哪裡緊繃？輕輕地放鬆它。' },
+      { focus: '接納當下', action: '找一件你正在抗拒的小事，練習對自己說：「此刻就是如此。」感受抗拒的鬆動。' },
+      { focus: '慈心擴展', action: '把善意依序送給：自己、你愛的人、一個中性的人、一個困難的人、所有眾生。' },
+      { focus: '無常觀照', action: '觀察一個正在變化的事物（呼吸、雲、聲音），體會一切都在流動，沒有什麼需要緊抓。' },
+      { focus: '整合承諾', action: '回顧這 30 天，選一個對你最有幫助的練習，承諾把它帶進往後的生活。' },
+    ],
+  },
+  {
+    id: 'breathing',
+    title: '呼吸 30 天',
+    icon: '🌬',
+    intro: '從認識呼吸到調節身心，掌握隨身可用的安定工具',
+    theme: '呼吸',
+    days: [
+      { focus: '觀察呼吸', action: '不改變呼吸，只是觀察它的節奏、深淺與溫度。專注 5 分鐘。' },
+      { focus: '手放腹部', action: '一手放胸、一手放腹，觀察哪隻手起伏較大。只是覺察，先不改變。' },
+      { focus: '腹式呼吸', action: '吸氣時讓腹部鼓起（而非胸口），吐氣時自然收回。緩慢練習 10 次。' },
+      { focus: '延長吐氣', action: '吸氣 4 秒、吐氣 6 秒。延長的吐氣會激活副交感神經，帶來放鬆。練習 10 輪。' },
+      { focus: '數息', action: '吸氣數 1、吐氣數 2……數到 10 再從頭。分心了，就溫柔地重新開始。' },
+      { focus: '呼吸與當下', action: '今天感到匆忙時，停下做三個緩慢的腹式呼吸，再繼續手邊的事。' },
+      { focus: '第一週回顧', action: '你注意到呼吸與情緒、緊張之間有什麼關聯？寫下一個觀察。' },
+      { focus: '4-7-8 呼吸', action: '吸氣 4 秒、憋氣 7 秒、吐氣 8 秒。重複 4 輪。這是安神助眠的經典方法。' },
+      { focus: '箱式呼吸', action: '吸 4、憋 4、吐 4、憋 4，像畫一個方形。重複 5 輪，穩定神經系統。' },
+      { focus: '生理嘆息', action: '兩次短吸氣（用鼻），接一次長吐氣（用口）。重複 3 次，可快速釋放壓力。' },
+      { focus: '交替鼻孔', action: '拇指輕按右鼻孔吸氣，換按左鼻孔吐氣，左右交替。平衡身心的瑜伽呼吸法。' },
+      { focus: '晨間喚醒', action: '起床後做 10 次快而深的呼吸，為一天注入能量與清醒。' },
+      { focus: '睡前安神', action: '睡前做 8 輪 4-7-8 呼吸，讓身體進入休息模式。' },
+      { focus: '第二週回顧', action: '哪一種呼吸技巧最適合你？什麼時候用它最有效？' },
+      { focus: '焦慮呼吸', action: '焦慮升起時，把手放在胸口，做緩慢的延長吐氣，告訴身體：你是安全的。' },
+      { focus: '憤怒暫停', action: '感到憤怒時，在開口說話前做一次完整的深呼吸，讓理性的前額葉重新上線。' },
+      { focus: '呼吸著陸', action: '慌亂時，把全部注意力放在一次呼吸的完整過程：吸—頂點—吐—停頓。' },
+      { focus: '掃描情緒', action: '吸氣時問「我現在感受到什麼」，吐氣時允許那個感受存在，不急著改變它。' },
+      { focus: '嘆息釋放', action: '今天允許自己嘆幾口長氣——這是身體天然的重置鍵。' },
+      { focus: '呼吸與疼痛', action: '不適或疼痛時，想像每一次吐氣，都把那份緊繃送出體外。' },
+      { focus: '第三週回顧', action: '用呼吸面對一個困難情緒之後，有什麼不同？' },
+      { focus: '紅燈呼吸', action: '把等紅燈、等電梯的零碎時間，變成三次有意識的呼吸。' },
+      { focus: '呼吸錨點', action: '選一個日常觸發點（開電腦、喝水），每次都配一個深呼吸。' },
+      { focus: '工作間隙', action: '每工作一小時，做一分鐘的呼吸休息，重置你的專注力。' },
+      { focus: '呼吸步行', action: '走路時配合步伐呼吸：三步吸氣、三步吐氣，讓身心同步。' },
+      { focus: '對話前呼吸', action: '重要對話或會議前，做三個呼吸，讓自己真正臨在當下。' },
+      { focus: '情緒緩衝', action: '今天在一個情緒反應升起之前，先給自己一個呼吸的空間。' },
+      { focus: '自然呼吸', action: '到戶外，配合新鮮空氣做 10 次深呼吸，感受身體的回應。' },
+      { focus: '呼吸冥想', action: '坐 10 分鐘，純粹以呼吸為唯一對象的冥想。念頭來了，就回到呼吸。' },
+      { focus: '整合承諾', action: '選一個最有感的呼吸練習，承諾在日常中持續使用它。' },
+    ],
+  },
+];
+
 function savePlan() {
   if (state.plan) localStorage.setItem('life_qa_plan', JSON.stringify(state.plan));
   else localStorage.removeItem('life_qa_plan');
@@ -5861,8 +5943,29 @@ function renderPlanCreate(grid) {
       </div>
       ${aiEnabled ? '' : '<p class="plan-create-hint">提示：AI 生成需在設定中輸入 API 金鑰並透過本地伺服器執行。「從卡片組裝」可離線使用。</p>'}
       <div id="planCreateStatus" class="plan-create-status"></div>
+
+      <div class="plan-template-section">
+        <div class="plan-template-divider"><span>或選擇精選範本</span></div>
+        <div class="plan-template-list">
+          ${PLAN_TEMPLATES.map(t => `
+            <button class="plan-template-card" onclick="createPlanFromTemplate('${t.id}')">
+              <span class="plan-template-icon">${t.icon}</span>
+              <span class="plan-template-text">
+                <span class="plan-template-title">${escHtml(t.title)}</span>
+                <span class="plan-template-intro">${escHtml(t.intro)}</span>
+              </span>
+            </button>
+          `).join('')}
+        </div>
+      </div>
     </div>
   `;
+}
+
+function createPlanFromTemplate(id) {
+  const t = PLAN_TEMPLATES.find(p => p.id === id);
+  if (!t) return;
+  createPlan(t.title, t.intro, t.theme, t.days, 'template');
 }
 
 function onPlanThemeChange() {
