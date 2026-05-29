@@ -1407,8 +1407,8 @@ body {
 
 .srs-stats-body {
   display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 36px;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 300px);
+  gap: 28px;
   align-items: start;
   margin-bottom: 20px;
 }
@@ -1422,8 +1422,8 @@ body {
   margin-bottom: 14px;
 }
 
-.srs-radar-section { display: flex; flex-direction: column; align-items: center; }
-.srs-radar-svg { display: block; }
+.srs-radar-section { display: flex; flex-direction: column; align-items: center; min-width: 0; }
+.srs-radar-svg { display: block; max-width: 100%; height: auto; }
 
 .srs-breakdown-section { min-width: 0; }
 
@@ -1952,8 +1952,8 @@ body {
 
 .growth-main {
   display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 36px;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 300px);
+  gap: 28px;
   align-items: start;
   margin-bottom: 20px;
 }
@@ -1967,7 +1967,7 @@ body {
   margin-bottom: 14px;
 }
 
-.growth-radar-section { display: flex; flex-direction: column; align-items: center; }
+.growth-radar-section { display: flex; flex-direction: column; align-items: center; min-width: 0; }
 
 .growth-radar-legend {
   font-size: 11px;

@@ -5474,6 +5474,7 @@ function showChatView(contextCardId = null) {
 
 function renderChatView() {
   const grid = document.getElementById('qaGrid');
+  grid.className = 'single-view';
   document.getElementById('emptyMsg').style.display = 'none';
 
   const isEnabled = state.settings.apiKey &&
@@ -5673,6 +5674,7 @@ function calcGrowthScore(catId) {
 
 function renderGrowthMap() {
   const grid = document.getElementById('qaGrid');
+  grid.className = 'single-view';
   document.getElementById('emptyMsg').style.display = 'none';
 
   const total = state.qaList.length;
@@ -5810,6 +5812,7 @@ function showSRSStats() {
 
 function renderSRSStats() {
   const grid = document.getElementById('qaGrid');
+  grid.className = 'single-view';
   document.getElementById('emptyMsg').style.display = 'none';
 
   const srsCards = state.qaList.filter(q => state.srsData[q.id]);
@@ -6072,6 +6075,7 @@ function showPlanView() {
 
 function renderPlanView() {
   const grid = document.getElementById('qaGrid');
+  grid.className = 'single-view';
   document.getElementById('emptyMsg').style.display = 'none';
   if (!state.plan) { renderPlanCreate(grid); return; }
   renderPlanActive(grid);
