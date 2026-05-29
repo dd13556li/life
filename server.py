@@ -21,7 +21,7 @@ class Handler(SimpleHTTPRequestHandler):
         self.end_headers()
 
     def do_POST(self):
-        if self.path not in ('/api/ai', '/api/chat'):
+        if self.path not in ('/api/ai', '/api/chat', '/api/plan'):
             self.send_error(404)
             return
 
@@ -35,6 +35,8 @@ class Handler(SimpleHTTPRequestHandler):
 
         if self.path == '/api/ai':
             self._handle_ai(data)
+        elif self.path == '/api/plan':
+            self._handle_plan(data)
         else:
             self._handle_chat(data)
 
@@ -77,6 +79,40 @@ class Handler(SimpleHTTPRequestHandler):
             'messages': messages[-10:],
         }
         self._call_anthropic(api_key, payload, lambda r: {'reply': r['content'][0]['text']})
+
+    def _handle_plan(self, data):
+        api_key = data.get('api_key', '').strip()
+        theme = data.get('theme', '').strip()
+        context = data.get('context', '').strip()
+        if not api_key:
+            self._json(400, {'error': '請提供 API 金鑰'}); return
+        if not theme:
+            self._json(400, {'error': '請提供計畫主題'}); return
+
+        prompt = (
+            f'請為「{theme}」這個主題，設計一個 30 天的個人成長行動計畫。'
+            + (f'\n\n使用者背景：{context}' if context else '')
+            + '\n\n設計原則：\n'
+            '- 循序漸進：前期（1-10天）建立覺察與基礎，中期（11-20天）深化練習，後期（21-30天）整合與內化\n'
+            '- 每天一個「今天就能做」的具體微行動，控制在 15 分鐘內可完成\n'
+            '- 行動要具體可操作，避免空泛口號（例如不要說「保持正念」，而要說「吃飯時放下手機，專注感受前三口的味道」）\n'
+            '- 語氣溫暖而有深度，融入相關哲學或心理學智慧\n\n'
+            '請嚴格回傳以下 JSON 格式（不要輸出任何其他文字）：\n'
+            '{\n'
+            '  "title": "計畫標題（簡短有力，12字內）",\n'
+            '  "intro": "一句話說明這 30 天會帶你經歷什麼（40字內）",\n'
+            '  "days": [\n'
+            '    {"day": 1, "action": "當天的具體行動（30-70字）", "focus": "當天主題詞（4字內）"}\n'
+            '  ]\n'
+            '}\n'
+            '注意：days 陣列必須剛好包含 30 個物件，day 從 1 到 30。'
+        )
+        payload = {
+            'model': 'claude-haiku-4-5-20251001',
+            'max_tokens': 4096,
+            'messages': [{'role': 'user', 'content': prompt}],
+        }
+        self._call_anthropic(api_key, payload, lambda r: {'plan': r['content'][0]['text']})
 
     def _call_anthropic(self, api_key, payload, extract_fn):
         req = urllib.request.Request(

@@ -4068,6 +4068,7 @@ let state = {
   chatMessages: [],
   chatLoading: false,
   chatContextCardId: null,
+  plan: null,
   currentCategory: 'all',
   currentPath: null,
   currentPathIndex: 0,
@@ -4100,6 +4101,8 @@ function loadFromStorage() {
     state.readHistory = loadReadHistory();
     state.srsData = loadSRSData();
     state.chatMessages = loadChatMessages();
+    const planRaw = localStorage.getItem('life_qa_plan');
+    if (planRaw) state.plan = JSON.parse(planRaw);
   } catch (e) {
     state.qaList = DEFAULT_QA;
   }
@@ -4502,6 +4505,7 @@ function renderGrid() {
   if (state.currentCategory === 'srs-stats') { renderSRSStats(); return; }
   if (state.currentCategory === 'growth') { renderGrowthMap(); return; }
   if (state.currentCategory === 'chat') { renderChatView(); return; }
+  if (state.currentCategory === 'plan') { renderPlanView(); return; }
   document.getElementById('btnGrid').style.display = '';
   document.getElementById('btnList').style.display = '';
   const filtered = getFiltered();
@@ -5736,6 +5740,266 @@ function buildRadarSVG(catStats, color = '#c9a84c') {
   return `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" class="srs-radar-svg">${gridLines}${axisLines}${dataPoly}${dots}${labels}${gridLabels}</svg>`;
 }
 
+// ── 30-Day Action Plan ────────────────────────────────────────
+let planSelectedDay = 1;
+
+function savePlan() {
+  if (state.plan) localStorage.setItem('life_qa_plan', JSON.stringify(state.plan));
+  else localStorage.removeItem('life_qa_plan');
+}
+
+function planCurrentDay(plan) {
+  const start = new Date(plan.startDate + 'T00:00:00');
+  const now = new Date(); now.setHours(0, 0, 0, 0);
+  const diff = Math.floor((now - start) / 86400000);
+  return Math.max(1, Math.min(30, diff + 1));
+}
+
+function planCompletedCount(plan) {
+  return plan.days.filter(d => d.done).length;
+}
+
+function planStreak(plan) {
+  // 從最近完成日往回數連續完成天數
+  const doneDays = plan.days.filter(d => d.done).map(d => d.day).sort((a, b) => b - a);
+  if (!doneDays.length) return 0;
+  let streak = 1;
+  for (let i = 1; i < doneDays.length; i++) {
+    if (doneDays[i] === doneDays[i - 1] - 1) streak++;
+    else break;
+  }
+  return streak;
+}
+
+function updatePlanBadge() {
+  const badge = document.getElementById('planBadge');
+  if (!badge) return;
+  if (!state.plan) { badge.textContent = ''; badge.style.display = 'none'; return; }
+  const cur = planCurrentDay(state.plan);
+  const todayDone = state.plan.days[cur - 1]?.done;
+  if (todayDone) { badge.textContent = ''; badge.style.display = 'none'; }
+  else { badge.textContent = '!'; badge.style.display = 'inline-block'; }
+}
+
+function showPlanView() {
+  closeSidebar();
+  state.currentCategory = 'plan';
+  state.currentPath = null;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('planNavBtn')?.classList.add('active');
+  document.getElementById('currentTitle').textContent = '30 天行動計畫';
+  document.getElementById('btnGrid').style.display = 'none';
+  document.getElementById('btnList').style.display = 'none';
+  if (state.plan) planSelectedDay = planCurrentDay(state.plan);
+  renderPlanView();
+}
+
+function renderPlanView() {
+  const grid = document.getElementById('qaGrid');
+  document.getElementById('emptyMsg').style.display = 'none';
+  if (!state.plan) { renderPlanCreate(grid); return; }
+  renderPlanActive(grid);
+}
+
+function renderPlanCreate(grid) {
+  const cats = CATEGORIES.filter(c => c.id !== 'all');
+  const aiEnabled = state.settings.apiKey &&
+    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+  grid.innerHTML = `
+    <div class="plan-create">
+      <div class="plan-create-icon">🎯</div>
+      <h3>建立你的 30 天行動計畫</h3>
+      <p class="plan-create-desc">選一個你想深耕的主題，系統會規劃 30 天循序漸進的每日微行動——從建立覺察，到深化練習，到整合內化。</p>
+      <label class="plan-label">主題</label>
+      <select id="planTheme" onchange="onPlanThemeChange()">
+        ${cats.map(c => `<option value="${c.id}">${c.label}</option>`).join('')}
+        <option value="__custom__">自訂主題…</option>
+      </select>
+      <input id="planCustomTheme" class="plan-custom-input" placeholder="輸入自訂主題，例如：戒掉拖延" style="display:none">
+      <div class="plan-create-actions">
+        <button class="btn-primary" onclick="generatePlanAI()" ${aiEnabled ? '' : 'disabled title="需啟用 AI 功能"'}>✦ AI 生成計畫</button>
+        <button class="btn-secondary" onclick="generatePlanFromCards()">從卡片組裝（離線）</button>
+      </div>
+      ${aiEnabled ? '' : '<p class="plan-create-hint">提示：AI 生成需在設定中輸入 API 金鑰並透過本地伺服器執行。「從卡片組裝」可離線使用。</p>'}
+      <div id="planCreateStatus" class="plan-create-status"></div>
+    </div>
+  `;
+}
+
+function onPlanThemeChange() {
+  const sel = document.getElementById('planTheme');
+  const custom = document.getElementById('planCustomTheme');
+  if (!sel || !custom) return;
+  custom.style.display = sel.value === '__custom__' ? 'block' : 'none';
+  if (sel.value === '__custom__') custom.focus();
+}
+
+function getSelectedPlanTheme() {
+  const sel = document.getElementById('planTheme');
+  if (!sel) return '';
+  if (sel.value === '__custom__') {
+    return document.getElementById('planCustomTheme').value.trim();
+  }
+  return sel.value;
+}
+
+function setPlanCreateStatus(msg, isError) {
+  const el = document.getElementById('planCreateStatus');
+  if (!el) return;
+  el.textContent = msg;
+  el.style.color = isError ? 'var(--danger)' : 'var(--text-muted)';
+}
+
+async function generatePlanAI() {
+  const theme = getSelectedPlanTheme();
+  if (!theme) { setPlanCreateStatus('請先選擇或輸入主題。', true); return; }
+  const stats = getReadStats();
+  const context = `已閱讀 ${stats.read}/${stats.total} 張卡片，已實踐 ${stats.practiced} 張，寫下 ${state.journal.length} 條反思。`;
+  setPlanCreateStatus('AI 規劃中…（約需 10-25 秒，請稍候）');
+  try {
+    const res = await fetch('/api/plan', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ api_key: state.settings.apiKey, theme, context }),
+    });
+    if (!res.ok) throw new Error(`伺服器錯誤 ${res.status}`);
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    let parsed;
+    try {
+      const txt = data.plan.replace(/^```json\s*/i, '').replace(/```\s*$/, '').trim();
+      parsed = JSON.parse(txt);
+    } catch (_) { throw new Error('AI 回傳格式無法解析，請重試。'); }
+    if (!Array.isArray(parsed.days) || parsed.days.length === 0) throw new Error('AI 未產生有效的計畫內容。');
+    createPlan(parsed.title || `30 天${theme}計畫`, parsed.intro || '', theme, parsed.days, 'ai');
+  } catch (err) {
+    setPlanCreateStatus('生成失敗：' + err.message, true);
+  }
+}
+
+function generatePlanFromCards() {
+  const theme = getSelectedPlanTheme();
+  if (!theme) { setPlanCreateStatus('請先選擇或輸入主題。', true); return; }
+  let cards = state.qaList.filter(q => q.category === theme && q.practice);
+  if (cards.length === 0) cards = state.qaList.filter(q => q.practice);
+  if (cards.length === 0) { setPlanCreateStatus('找不到可用的實踐內容。', true); return; }
+  // 洗牌後循環取用，湊滿 30 天
+  const shuffled = [...cards].sort(() => Math.random() - 0.5);
+  const days = [];
+  for (let i = 0; i < 30; i++) {
+    const c = shuffled[i % shuffled.length];
+    days.push({ day: i + 1, action: c.practice, focus: c.category });
+  }
+  const isCat = CATEGORIES.some(c => c.id === theme);
+  createPlan(`30 天${isCat ? theme : '「' + theme + '」'}實踐`,
+    `透過卡片中的每日實踐，循序深耕「${theme}」`, theme, days, 'cards');
+}
+
+function createPlan(title, intro, theme, daysRaw, source) {
+  const days = daysRaw.slice(0, 30).map((d, i) => ({
+    day: i + 1,
+    action: (d.action || '').trim() || '回顧並反思今天的練習。',
+    focus: (d.focus || '').trim(),
+    done: false,
+    doneDate: null,
+  }));
+  while (days.length < 30) {
+    days.push({ day: days.length + 1, action: '回顧這段旅程，寫下你注意到的一個改變。', focus: '整合', done: false, doneDate: null });
+  }
+  state.plan = {
+    title, intro, theme, source,
+    startDate: new Date().toISOString().slice(0, 10),
+    createdAt: Date.now(),
+    days,
+  };
+  savePlan();
+  planSelectedDay = 1;
+  updatePlanBadge();
+  renderPlanView();
+}
+
+function abandonPlan() {
+  if (!confirm('確定要放棄目前的計畫嗎？進度將無法復原。')) return;
+  state.plan = null;
+  savePlan();
+  updatePlanBadge();
+  renderPlanView();
+}
+
+function selectPlanDay(day) {
+  planSelectedDay = day;
+  renderPlanView();
+}
+
+function togglePlanDay(day) {
+  if (!state.plan) return;
+  const cur = planCurrentDay(state.plan);
+  if (day > cur) { alert('還沒到這一天喔，先完成今天的行動吧。'); return; }
+  const d = state.plan.days[day - 1];
+  d.done = !d.done;
+  d.doneDate = d.done ? new Date().toISOString().slice(0, 10) : null;
+  savePlan();
+  updatePlanBadge();
+  renderPlanView();
+}
+
+function renderPlanActive(grid) {
+  const plan = state.plan;
+  const cur = planCurrentDay(plan);
+  const completed = planCompletedCount(plan);
+  const streak = planStreak(plan);
+  const pct = Math.round(completed / 30 * 100);
+  const sel = plan.days[planSelectedDay - 1];
+
+  const cells = plan.days.map(d => {
+    let cls = 'plan-cell';
+    if (d.done) cls += ' done';
+    else if (d.day === cur) cls += ' today';
+    else if (d.day < cur) cls += ' missed';
+    else cls += ' future';
+    if (d.day === planSelectedDay) cls += ' selected';
+    return `<button class="${cls}" onclick="selectPlanDay(${d.day})">${d.done ? '✓' : d.day}</button>`;
+  }).join('');
+
+  const selDone = sel.done;
+  const selLocked = sel.day > cur;
+
+  grid.innerHTML = `
+    <div class="plan-active">
+      <div class="plan-header">
+        <div class="plan-header-text">
+          <div class="plan-title">${escHtml(plan.title)}</div>
+          ${plan.intro ? `<div class="plan-intro">${escHtml(plan.intro)}</div>` : ''}
+        </div>
+        <button class="plan-abandon" onclick="abandonPlan()">放棄計畫</button>
+      </div>
+
+      <div class="plan-progress-bar"><div class="plan-progress-fill" style="width:${pct}%"></div></div>
+      <div class="plan-stats">
+        <div class="plan-stat"><span class="plan-stat-num">${cur}</span><span class="plan-stat-label">今天是第 N 天</span></div>
+        <div class="plan-stat"><span class="plan-stat-num">${completed}/30</span><span class="plan-stat-label">已完成</span></div>
+        <div class="plan-stat"><span class="plan-stat-num">${streak}</span><span class="plan-stat-label">連續天數</span></div>
+      </div>
+
+      <div class="plan-grid">${cells}</div>
+
+      <div class="plan-day-detail ${selDone ? 'is-done' : ''}">
+        <div class="plan-day-head">
+          <span class="plan-day-num">第 ${sel.day} 天</span>
+          ${sel.focus ? `<span class="plan-day-focus">${escHtml(sel.focus)}</span>` : ''}
+          ${sel.day === cur ? '<span class="plan-day-today-tag">今天</span>' : ''}
+        </div>
+        <div class="plan-day-action">${escHtml(sel.action)}</div>
+        ${selLocked
+          ? '<div class="plan-day-locked">這一天還沒到——先專注於今天。</div>'
+          : `<button class="plan-day-btn ${selDone ? 'done' : ''}" onclick="togglePlanDay(${sel.day})">${selDone ? `✓ 已完成（${sel.doneDate}）· 點此取消` : '◉ 標記今天已完成'}</button>`}
+      </div>
+
+      ${cur >= 30 && completed >= 25 ? '<div class="plan-complete-banner">🎉 你已走過這 30 天的大部分旅程——這份堅持，本身就是答案。</div>' : ''}
+    </div>
+  `;
+}
+
 // ── PWA Install ───────────────────────────────────────────────
 let deferredInstallPrompt = null;
 
@@ -5808,6 +6072,7 @@ function handleURLRoute() {
     case 'srs':       showSRSView(); break;
     case 'srs-stats': showSRSStats(); break;
     case 'chat':      showChatView(); break;
+    case 'plan':      showPlanView(); break;
     case 'growth':    showGrowthMap(); break;
     case 'journal':   showJournalView(); break;
     case 'today':     if (typeof todayRecId !== 'undefined' && todayRecId) openView(todayRecId); break;
@@ -6017,6 +6282,7 @@ updateAIStatus();
 updateJournalCount();
 updateProgressBadge();
 renderSRSBadge();
+updatePlanBadge();
 handleURLRoute();
 initInstallUI();
 setTimeout(checkSRSNotification, 1500);
