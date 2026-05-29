@@ -8,6 +8,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;600&family=Noto+Sans+TC:wght@300;400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#c9a84c">
+  <link rel="apple-touch-icon" href="/icon.svg">
 </head>
 <body>
   <div class="app">
@@ -237,6 +240,11 @@
         </div>
         <p class="settings-desc" style="margin-top:10px">個人筆記包含反思日誌、實踐打卡與閱讀記錄，以 Markdown 格式匯出。個人資料備份包含日誌、閱讀歷史與 SRS 資料。</p>
       </div>
+      <div class="settings-block">
+        <h3>每日複習提醒</h3>
+        <p class="settings-desc">開啟後，每次進入 App 時若有待複習卡片，將顯示瀏覽器通知（每天至多一次）。</p>
+        <button class="btn-secondary" id="sNotifyBtn" onclick="enableNotifications()">🔔 啟用每日複習提醒</button>
+      </div>
       <div class="form-actions">
         <button class="btn-primary" onclick="saveSettings()">儲存設定</button>
       </div>
@@ -244,5 +252,10 @@
   </div>
 
   <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
+  </script>
 </body>
 </html>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <rect width="192" height="192" rx="28" fill="#07091a"/>
+  <circle cx="96" cy="96" r="64" fill="none" stroke="#c9a84c" stroke-width="3.5"/>
+  <circle cx="96" cy="96" r="44" fill="none" stroke="#c9a84c" stroke-width="1.5" opacity="0.45"/>
+  <text x="96" y="116" text-anchor="middle" font-size="52" fill="#c9a84c"
+        font-family="'Noto Serif TC', serif" font-weight="600">問</text>
+</svg>

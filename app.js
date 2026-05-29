@@ -5604,6 +5604,63 @@ function buildRadarSVG(catStats, color = '#c9a84c') {
   return `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" class="srs-radar-svg">${gridLines}${axisLines}${dataPoly}${dots}${labels}${gridLabels}</svg>`;
 }
 
+// ── Notifications ─────────────────────────────────────────────
+function updateNotificationBtn() {
+  const btn = document.getElementById('sNotifyBtn');
+  if (!btn) return;
+  if (!('Notification' in window)) {
+    btn.textContent = '此瀏覽器不支援通知';
+    btn.disabled = true;
+    return;
+  }
+  const p = Notification.permission;
+  if (p === 'granted') {
+    btn.textContent = '🔔 通知已啟用';
+    btn.style.color = '#5dba7e';
+  } else if (p === 'denied') {
+    btn.textContent = '🔕 通知已封鎖（請至瀏覽器設定開啟）';
+    btn.disabled = true;
+  }
+}
+
+async function enableNotifications() {
+  if (!('Notification' in window)) { alert('此瀏覽器不支援通知功能。'); return; }
+  if (Notification.permission === 'granted') {
+    fireTestNotification(); return;
+  }
+  const perm = await Notification.requestPermission();
+  if (perm === 'granted') {
+    fireTestNotification();
+  } else if (perm === 'denied') {
+    alert('通知已被拒絕。請在瀏覽器設定中手動允許通知。');
+  }
+  updateNotificationBtn();
+}
+
+function fireTestNotification() {
+  const due = getSRSDueCards().length;
+  new Notification('人生大哉問', {
+    body: due > 0 ? `今天有 ${due} 張卡片待複習 ✓` : '通知已啟用！有待複習卡片時將自動提醒。',
+    icon: '/icon.svg',
+    tag: 'life-qa-test',
+  });
+}
+
+function checkSRSNotification() {
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  const today = new Date().toISOString().slice(0, 10);
+  const lastNotify = localStorage.getItem('life_qa_notified');
+  if (lastNotify === today) return;
+  const due = getSRSDueCards();
+  if (due.length === 0) return;
+  localStorage.setItem('life_qa_notified', today);
+  new Notification('人生大哉問 — 今日複習提醒', {
+    body: `今天有 ${due.length} 張卡片待複習`,
+    icon: '/icon.svg',
+    tag: 'srs-daily',
+  });
+}
+
 // ── Init ───────────────────────────────────────────────────────
 loadFromStorage();
 renderCategories();
@@ -5614,3 +5671,5 @@ updateAIStatus();
 updateJournalCount();
 updateProgressBadge();
 renderSRSBadge();
+setTimeout(checkSRSNotification, 1500);
+setTimeout(updateNotificationBtn, 100);

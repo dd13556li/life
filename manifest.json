@@ -1,0 +1,13 @@
+{
+  "name": "人生大哉問",
+  "short_name": "人生大哉問",
+  "description": "探索生命最深邃的問題",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#07091a",
+  "theme_color": "#c9a84c",
+  "lang": "zh-TW",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
