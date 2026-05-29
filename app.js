@@ -3991,6 +3991,17 @@ const CARD_RELATIONS = {
   'buddhist_anxiety': ['ax1', 'ax2', 'bio_thich'],
   'existential_anxiety': ['ax3', 'bio_heidegger', 'bio_sartre'],
   'ai12': ['ax1', 'ax4', 'ai11'],
+  // AI 整合卡（L3）——連結各主題的核心卡片，形成「Claude 視角」的跨主題線索
+  'ai1': ['s1', 's2', 'ai_existential'],
+  'ai2': ['s3', 'bio_seligman', 'sufi_contentment'],
+  'ai3': ['s5', 'bio_fromm', 'greek_love'],
+  'ai4': ['s7', 'tibet_death', 'bio_epicurus'],
+  'ai5': ['s9', 'bio_parfit', 'shadow_work'],
+  'ai6': ['s11', 'bio_singer', 'moral_emotions'],
+  'ai7': ['h1', 'h3', 'wisdom_traditions'],
+  'ai8': ['o1', 'o2', 'o3'],
+  'ai9': ['th1', 'th2', 'yalom_existential'],
+  'ai10': ['kh1', 'bio_wangym', 'stoic_daily'],
   // 其他（補充）
   'o3': ['o2', 'bio_sartre', 'kh1'],
   'o4': ['o5', 'f3', 'sufi_contentment'],
@@ -4056,6 +4067,34 @@ const READING_PATHS = [
     icon: '☽',
     desc: '在最黑暗的時刻，找到光的方向——從愛比克泰德到亞隆的存在主義治療',
     cards: ['th1', 'bio_epictetus', 'bio_seneca', 'th2', 'yalom_existential', 'th3', 'bibliotherapy', 'ai9'],
+  },
+  {
+    id: 'heart',
+    title: '心經智慧之旅',
+    icon: '卍',
+    desc: '從般若到無我——以《心經》為地圖，學習鬆開執著、自在面對苦難與無常',
+    cards: ['h6', 'h1', 'h3', 'h4', 'h2', 'h5', 'wisdom_traditions', 'ai7'],
+  },
+  {
+    id: 'anger',
+    title: '與憤怒和解',
+    icon: '怒',
+    desc: '憤怒不是壞情緒，而是邊界的信號——從斯多葛到非暴力溝通，學習傾聽並轉化它',
+    cards: ['an1', 'an2', 'stoic_anger', 'an3', 'an4', 'nvc_anger', 'an5', 'an6', 'ai11'],
+  },
+  {
+    id: 'anxiety',
+    title: '安頓焦慮之旅',
+    icon: '慮',
+    desc: '從理解內耗到身體療癒，從佛教觀照到存在主義——學習與焦慮建立不同的關係',
+    cards: ['ax1', 'ax2', 'ax3', 'ax5', 'ax4', 'ax6', 'buddhist_anxiety', 'existential_anxiety', 'ai12'],
+  },
+  {
+    id: 'modern',
+    title: '現代生活的哲學',
+    icon: '◇',
+    desc: '時間、自由意志、金錢、獨處、創造力、科技——用哲學重新審視當代生活的核心命題',
+    cards: ['o1', 'o3', 'o4', 'o5', 'o6', 'o2', 'philosophy_science', 'cross_cultural_wisdom', 'ai_existential'],
   },
 ];
 
