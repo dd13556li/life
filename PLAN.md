@@ -126,9 +126,13 @@
 
 ## 遠期計畫（6-18 個月）
 
-### P3.1 手機 App（PWA / React Native）
-- 每日推送通知
-- 離線使用，健康 App 整合
+### P3.1 手機 App（PWA）
+- [x] 可安裝 PWA：maskable 圖示、直向鎖定、App 捷徑、安裝提示橫幅
+- [x] URL 路由（?view=srs/chat/growth/today，支援捷徑與書籤）
+- [x] iOS / Android 全螢幕 meta、安全區域（瀏海）支援
+- [x] 離線使用（Service Worker 靜態快取，localStorage 資料）
+- [x] 每日複習推送通知（步驟 18 已完成）
+- [ ] 健康 App 整合（需原生能力，暫緩）
 
 ### P3.2 30 天行動計畫生成器
 - AI 生成個人化計畫，追蹤執行進度
@@ -165,6 +169,7 @@
 18. [x] 每日 SRS 提醒通知（PWA + 瀏覽器通知）
 19. [x] Google Drive 雲端備份（OAuth 2.0 + appDataFolder）
 20. [x] 「其他」類別補充（5→10張：自由意志、金錢、獨處、創造力、知足）
+21. [x] P3.1 可安裝 PWA（maskable 圖示 + App 捷徑 + 安裝橫幅 + URL 路由 + iOS 全螢幕）
 
 ---
 

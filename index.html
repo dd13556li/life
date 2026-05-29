@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>人生大哉問</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,6 +11,10 @@
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#c9a84c">
   <link rel="apple-touch-icon" href="/icon.svg">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="人生大哉問">
 </head>
 <body>
   <div class="app">
@@ -212,6 +216,11 @@
     <div class="modal modal-sm" onclick="event.stopPropagation()">
       <button class="close-btn" onclick="closeSettings()">✕</button>
       <h2 class="modal-title">設定</h2>
+      <div class="settings-block" id="installBlock" style="display:none">
+        <h3>安裝 App</h3>
+        <p class="settings-desc">將「人生大哉問」加入主畫面，像原生 App 一樣全螢幕使用、離線閱讀。</p>
+        <button class="btn-primary" id="installBtn" onclick="promptInstall()">＋ 加入主畫面</button>
+      </div>
       <div class="settings-block">
         <h3>AI 功能</h3>
         <p class="settings-desc">輸入 Claude API 金鑰以啟用 AI 生成答案。需搭配本地伺服器使用。</p>
@@ -262,6 +271,13 @@
         <button class="btn-primary" onclick="saveSettings()">儲存設定</button>
       </div>
     </div>
+  </div>
+
+  <div id="installBanner" class="install-banner">
+    <span class="install-banner-icon">◉</span>
+    <span id="installBannerText" class="install-banner-text">將「人生大哉問」加入主畫面，隨時探索</span>
+    <button id="installBannerBtn" class="install-banner-btn" onclick="promptInstall()">安裝</button>
+    <button class="install-banner-close" onclick="dismissInstallBanner()" title="關閉">✕</button>
   </div>
 
   <script src="app.js"></script>

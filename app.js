@@ -5736,6 +5736,84 @@ function buildRadarSVG(catStats, color = '#c9a84c') {
   return `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" class="srs-radar-svg">${gridLines}${axisLines}${dataPoly}${dots}${labels}${gridLabels}</svg>`;
 }
 
+// ── PWA Install ───────────────────────────────────────────────
+let deferredInstallPrompt = null;
+
+function isStandalone() {
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+
+function isIOS() {
+  return /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+}
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  const block = document.getElementById('installBlock');
+  if (block) block.style.display = '';
+  if (localStorage.getItem('life_qa_install_dismissed') !== '1') {
+    document.getElementById('installBanner')?.classList.add('show');
+  }
+});
+
+window.addEventListener('appinstalled', () => {
+  deferredInstallPrompt = null;
+  hideInstallBanner();
+  const block = document.getElementById('installBlock');
+  if (block) block.style.display = 'none';
+});
+
+async function promptInstall() {
+  if (!deferredInstallPrompt) {
+    if (isIOS()) alert('在 Safari 中點擊下方的「分享」按鈕，然後選擇「加入主畫面」即可安裝。');
+    return;
+  }
+  deferredInstallPrompt.prompt();
+  const { outcome } = await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+  hideInstallBanner();
+  if (outcome === 'accepted') {
+    const block = document.getElementById('installBlock');
+    if (block) block.style.display = 'none';
+  }
+}
+
+function dismissInstallBanner() {
+  localStorage.setItem('life_qa_install_dismissed', '1');
+  hideInstallBanner();
+}
+
+function hideInstallBanner() {
+  document.getElementById('installBanner')?.classList.remove('show');
+}
+
+function initInstallUI() {
+  if (isStandalone()) return; // 已安裝，不再提示
+  // iOS Safari 不觸發 beforeinstallprompt，改顯示手動安裝指引
+  if (isIOS() && localStorage.getItem('life_qa_install_dismissed') !== '1') {
+    const text = document.getElementById('installBannerText');
+    const btn = document.getElementById('installBannerBtn');
+    if (text) text.textContent = '點擊瀏覽器「分享」→「加入主畫面」即可安裝';
+    if (btn) btn.style.display = 'none';
+    document.getElementById('installBanner')?.classList.add('show');
+  }
+}
+
+// ── URL Routing（PWA 捷徑與書籤） ──────────────────────────────
+function handleURLRoute() {
+  const view = new URLSearchParams(location.search).get('view');
+  if (!view) return;
+  switch (view) {
+    case 'srs':       showSRSView(); break;
+    case 'srs-stats': showSRSStats(); break;
+    case 'chat':      showChatView(); break;
+    case 'growth':    showGrowthMap(); break;
+    case 'journal':   showJournalView(); break;
+    case 'today':     if (typeof todayRecId !== 'undefined' && todayRecId) openView(todayRecId); break;
+  }
+}
+
 // ── Google Drive Backup ───────────────────────────────────────
 let gDriveToken = null;
 const DRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.appdata';
@@ -5939,5 +6017,7 @@ updateAIStatus();
 updateJournalCount();
 updateProgressBadge();
 renderSRSBadge();
+handleURLRoute();
+initInstallUI();
 setTimeout(checkSRSNotification, 1500);
 setTimeout(updateNotificationBtn, 100);

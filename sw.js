@@ -1,7 +1,7 @@
 'use strict';
 
-const CACHE = 'life-qa-v1';
-const STATIC = ['/', '/index.html', '/app.js', '/style.css', '/icon.svg'];
+const CACHE = 'life-qa-v2';
+const STATIC = ['/', '/index.html', '/app.js', '/style.css', '/icon.svg', '/icon-maskable.svg', '/manifest.json'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(STATIC)));
