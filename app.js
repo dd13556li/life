@@ -1073,6 +1073,28 @@ const DEFAULT_QA = [
     date: '2025-05-13',
     ai: false,
   },
+  {
+    id: 'suffering_necessary',
+    category: '苦難與療癒',
+    order: 5,
+    subtitle: '這個問題悄悄假設了痛苦與意義可以分開——而最難、也最誠實的可能是：它們分不開。能被刺穿的脆弱，和讓任何事物對你產生意義的能力，是同一件事。',
+    question: '如果一開始就沒有這些痛苦與恐懼，人會更好嗎？',
+    answer: `這不是一個天真的問題。叔本華、佛教的涅槃（苦的徹底止息）、乃至反生育主義，都曾認真主張過：沒有，或許真的比較好。把這一面用一句「苦難使人成長」打發掉，是不誠實的——這個直覺有它的重量。
+
+但當我們真把這個思想實驗推到底，會撞上一件事：你想拔掉的「臭蟲」，和你想留下的「珍貴」，常常是同一條線路。怕死，和珍惜活著，是同一件事的兩面；會因失去而痛，和能夠去愛，共用同一種能力；焦慮的折磨，和能為未來負責、能關心，來自同一套系統。實證上也是如此——先天感覺不到痛的人，常年輕就死於沒察覺的傷；因腦部病變而感覺不到恐懼的人，會一再把自己推入險境。一個不會悲傷的存在，也是一個不會愛的存在。
+
+而意義，需要賭注。一件事之所以對你重要，正因為你可能失去它。一個什麼都不會失去、什麼都不痛的世界，也會是一個什麼都無所謂的世界。
+
+但這不是要說「所以苦難是好的」——那是廉價的謊。真正該分清的，是兩件不同的東西：會痛的「能力」，和痛的「失準與氾濫」。前者是必要的、甚至珍貴的，因為它讓你能愛、能在乎、能感到活著；後者——走不出的創傷、慢性的焦慮、我們自己反覆補上的第二支箭——才是真正多餘的苦，而那是可以調回來的。所有的療癒，瞄準的從來不是前者，是後者。
+
+所以這個問題真正鬆動的，也許不是「要不要有痛苦」，而是你看自己的眼光：從「我是不是哪裡壞了、為什麼我會這樣」——翻轉成——「這是一個會愛、會死、有意識的存在，必然要承擔的重量」。前者是孤獨與羞愧，後者是尊嚴與普同。你的痛苦，不是你的故障，是你身為人的證明。
+
+怕死，也許從來不是一個要被解決的問題，而是一個指路牌：它指向的，是你有多深地愛著「活著」這件事。`,
+    science: '演化心理學指出，痛苦與恐懼是「功能」而非「故障」：負向偏誤、痛覺與恐懼都是保護機制——先天性痛覺不敏感症（CIP）患者常因無法察覺傷害而早夭，Urbach-Wiethe 症（杏仁核鈣化）導致恐懼缺失者則一再陷入危險，印證了這些「問題」的保護價值。情感神經科學顯示，正負情緒系統高度交織，難以選擇性切除其一。亞里斯多德的「中道」主張美德在於情緒的「適度」而非「消除」。佛教對 dukkha 的分析也指出，苦源於「執取」而非「感受」本身——涅槃止息的是抓取，不是慈悲。作為誠實的對照面，叔本華的悲觀主義與貝納塔（Benatar）的反生育主義《最好別出生》（2006）代表了「沒有會更好」的嚴肅哲學立場——這個張力，值得保留，而非替你下結論。',
+    practice: '想一件你最近承受的痛苦或恐懼。先不急著解決它，問兩個問題：(1) 這份痛，連著的是我在乎的什麼？（怕失去某人，是因為愛；怕失敗，是因為在乎；焦慮，是因為有想守護的東西。）找出它指向的那個「珍貴」。(2) 這份痛裡，有多少是事情本身（第一支箭），有多少是我反覆對自己說的話補上去的（第二支箭——「我不該這樣」「我永遠好不了」）？試著只放下第二支箭，留下第一支。你會發現，剩下的那份痛，往往是可以帶著走的——因為它連著的，正是你所愛的東西。',
+    date: '2026-05-29',
+    ai: false,
+  },
 
   {
     id: 'ai9',
@@ -4281,7 +4303,7 @@ const LEVEL2_IDS = new Set([
   'ub1','ik1','in1','td1','greek_love','sufi_contentment','tibet_death',
   'confucian_ren','mbsr_guide','hygge_life','jewish_wisdom','philosophical_counseling',
   'upanishad_atman','islamic_ethics','bibliotherapy','positive_psych_practice',
-  'eco_grief','stoic_daily','feminist_ethics','karma_dharma','shadow_work',
+  'eco_grief','stoic_daily','feminist_ethics','karma_dharma','shadow_work','suffering_necessary',
   'nvc_guide','yalom_existential','wisdom_traditions','philosophy_science',
   'ai_existential','love_seven','cross_cultural_wisdom',
   // 憤怒與不滿
@@ -4317,6 +4339,8 @@ const CARD_RELATIONS = {
   'bio_sartre': ['bio_heidegger', 's9', 'bio_beauvoir'],
   'bio_heidegger': ['bio_sartre', 's7', 'bio_marcus'],
   'bio_camus': ['bio_sartre', 's1', 'th2'],
+  // 苦難的根源（為何，非如何）
+  'suffering_necessary': ['th3', 'e3', 'ax1'],
   // 質性深化批次（橫向補強）
   'attachment_theory': ['s5', 'bio_fromm', 'bio_gottman'],
   'bio_rawls': ['s11', 'bio_singer', 'bio_kant'],
@@ -4545,7 +4569,7 @@ const READING_PATHS = [
     title: '苦難與療癒',
     icon: '☽',
     desc: '在最黑暗的時刻，找到光的方向——從愛比克泰德到亞隆的存在主義治療',
-    cards: ['th1', 'th4', 'bio_epictetus', 'bio_seneca', 'th2', 'yalom_existential', 'th3', 'bibliotherapy', 'ai9'],
+    cards: ['th1', 'th4', 'suffering_necessary', 'bio_epictetus', 'bio_seneca', 'th2', 'yalom_existential', 'th3', 'bibliotherapy', 'ai9'],
   },
   {
     id: 'heart',
