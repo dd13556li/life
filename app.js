@@ -4663,7 +4663,116 @@ function exportData() {
   const blob = new Blob([JSON.stringify(state.qaList, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `人生大哉問_${new Date().toISOString().slice(0,10)}.json`;
+  a.download = `人生大哉問_卡片_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+}
+
+function exportNotes() {
+  const today = new Date().toISOString().slice(0, 10);
+  const stats = getReadStats();
+  const streak = getPracticeStreak();
+  const lines = [];
+
+  lines.push(`# 人生大哉問 — 個人筆記`);
+  lines.push(`匯出日期：${today}\n`);
+
+  // 概覽
+  lines.push(`## 學習概覽\n`);
+  lines.push(`| 項目 | 數量 |`);
+  lines.push(`|------|------|`);
+  lines.push(`| 已閱讀卡片 | ${stats.read} / ${stats.total} 張 |`);
+  lines.push(`| 已實踐卡片 | ${stats.practiced} 張 |`);
+  lines.push(`| 反思日誌 | ${state.journal.length} 條 |`);
+  lines.push(`| 當前連續實踐 | ${streak} 天 |`);
+  lines.push(`| 已加入 SRS 複習 | ${Object.keys(state.srsData).length} 張 |\n`);
+
+  // 反思日誌
+  if (state.journal.length > 0) {
+    lines.push(`---\n`);
+    lines.push(`## 反思日誌（${state.journal.length} 條）\n`);
+    const byDate = {};
+    [...state.journal].sort((a, b) => b.date.localeCompare(a.date)).forEach(e => {
+      if (!byDate[e.date]) byDate[e.date] = [];
+      byDate[e.date].push(e);
+    });
+    Object.keys(byDate).sort().reverse().forEach(date => {
+      byDate[date].forEach(e => {
+        lines.push(`### ${date}`);
+        if (e.cardQuestion) lines.push(`**卡片：** ${e.cardQuestion}\n`);
+        lines.push(`> ${e.text.replace(/\n/g, '\n> ')}\n`);
+      });
+    });
+  }
+
+  // 實踐打卡
+  const practicedCards = state.qaList.filter(q => state.readHistory[q.id]?.practiced?.length > 0);
+  if (practicedCards.length > 0) {
+    lines.push(`---\n`);
+    lines.push(`## 實踐打卡（${practicedCards.length} 張）\n`);
+    lines.push(`| 卡片問題 | 分類 | 打卡天數 | 最近打卡 |`);
+    lines.push(`|---------|------|---------|---------|`);
+    [...practicedCards]
+      .sort((a, b) => {
+        const pa = state.readHistory[a.id].practiced;
+        const pb = state.readHistory[b.id].practiced;
+        return pb[pb.length - 1].localeCompare(pa[pa.length - 1]);
+      })
+      .forEach(q => {
+        const h = state.readHistory[q.id];
+        const days = h.practiced.length;
+        const last = h.practiced[h.practiced.length - 1];
+        const qt = q.question.length > 30 ? q.question.slice(0, 30) + '…' : q.question;
+        lines.push(`| ${qt} | ${q.category} | ${days} 天 | ${last} |`);
+      });
+    lines.push('');
+  }
+
+  // 閱讀記錄
+  const readCards = state.qaList.filter(q => state.readHistory[q.id]?.count > 0);
+  if (readCards.length > 0) {
+    lines.push(`---\n`);
+    lines.push(`## 閱讀記錄（${readCards.length} 張）\n`);
+    lines.push(`| 卡片問題 | 分類 | 閱讀次數 | 最後閱讀 |`);
+    lines.push(`|---------|------|---------|---------|`);
+    [...readCards]
+      .sort((a, b) => {
+        const la = state.readHistory[a.id].lastRead || '';
+        const lb = state.readHistory[b.id].lastRead || '';
+        return lb.localeCompare(la);
+      })
+      .forEach(q => {
+        const h = state.readHistory[q.id];
+        const qt = q.question.length > 30 ? q.question.slice(0, 30) + '…' : q.question;
+        lines.push(`| ${qt} | ${q.category} | ${h.count} 次 | ${h.lastRead || '-'} |`);
+      });
+    lines.push('');
+  }
+
+  lines.push(`---\n`);
+  lines.push(`*由「人生大哉問」自動生成 · ${today}*`);
+
+  const content = lines.join('\n');
+  const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `人生大哉問_個人筆記_${today}.md`;
+  a.click();
+}
+
+function exportPersonalData() {
+  const today = new Date().toISOString().slice(0, 10);
+  const data = {
+    exportDate: today,
+    version: '1.0',
+    journal: state.journal,
+    readHistory: state.readHistory,
+    srsData: state.srsData,
+    chatMessages: state.chatMessages,
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `人生大哉問_個人資料備份_${today}.json`;
   a.click();
 }
 

@@ -223,14 +223,19 @@
       <div class="settings-block">
         <h3>資料管理</h3>
         <div class="settings-actions">
-          <button class="btn-secondary" onclick="exportData()">匯出 JSON</button>
+          <button class="btn-secondary" onclick="exportData()">匯出卡片 JSON</button>
           <label class="btn-secondary" style="cursor:pointer">
-            匯入 JSON
+            匯入卡片 JSON
             <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(this)">
           </label>
           <button class="btn-danger" onclick="resetData()">重置為預設資料</button>
         </div>
         <p class="settings-desc" style="margin-top:10px">匯入的卡片將合併到現有資料中（已存在的 ID 不會被覆蓋）。</p>
+        <div class="settings-actions" style="margin-top:12px">
+          <button class="btn-secondary" onclick="exportNotes()">✎ 匯出個人筆記（Markdown）</button>
+          <button class="btn-secondary" onclick="exportPersonalData()">⬇ 備份個人資料（JSON）</button>
+        </div>
+        <p class="settings-desc" style="margin-top:10px">個人筆記包含反思日誌、實踐打卡與閱讀記錄，以 Markdown 格式匯出。個人資料備份包含日誌、閱讀歷史與 SRS 資料。</p>
       </div>
       <div class="form-actions">
         <button class="btn-primary" onclick="saveSettings()">儲存設定</button>
