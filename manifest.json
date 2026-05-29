@@ -1,9 +1,9 @@
 {
   "name": "人生大哉問",
   "short_name": "人生大哉問",
-  "description": "探索生命最深邃的問題——141 張哲學問答卡片，從知道到做到",
-  "start_url": "/",
-  "scope": "/",
+  "description": "探索生命最深邃的問題——160 張哲學問答卡片，從知道到做到",
+  "start_url": ".",
+  "scope": ".",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#07091a",
@@ -12,26 +12,26 @@
   "dir": "ltr",
   "categories": ["education", "lifestyle", "books"],
   "icons": [
-    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
-    { "src": "/icon-maskable.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icon-maskable.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
   ],
   "shortcuts": [
     {
       "name": "今日複習",
       "short_name": "複習",
-      "url": "/?view=srs",
+      "url": "./?view=srs",
       "description": "查看今天待複習的卡片"
     },
     {
       "name": "AI 對話",
       "short_name": "對話",
-      "url": "/?view=chat",
+      "url": "./?view=chat",
       "description": "與 AI 進行蘇格拉底式對話"
     },
     {
       "name": "今日推薦",
       "short_name": "推薦",
-      "url": "/?view=today",
+      "url": "./?view=today",
       "description": "查看今天推薦的卡片"
     }
   ]

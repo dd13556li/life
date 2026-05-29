@@ -6884,7 +6884,7 @@ function fireTestNotification() {
   const due = getSRSDueCards().length;
   new Notification('人生大哉問', {
     body: due > 0 ? `今天有 ${due} 張卡片待複習 ✓` : '通知已啟用！有待複習卡片時將自動提醒。',
-    icon: '/icon.svg',
+    icon: 'icon.svg',
     tag: 'life-qa-test',
   });
 }
@@ -6899,7 +6899,7 @@ function checkSRSNotification() {
   localStorage.setItem('life_qa_notified', today);
   new Notification('人生大哉問 — 今日複習提醒', {
     body: `今天有 ${due.length} 張卡片待複習`,
-    icon: '/icon.svg',
+    icon: 'icon.svg',
     tag: 'srs-daily',
   });
 }

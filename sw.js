@@ -1,7 +1,8 @@
 'use strict';
 
-const CACHE = 'life-qa-v2';
-const STATIC = ['/', '/index.html', '/app.js', '/style.css', '/icon.svg', '/icon-maskable.svg', '/manifest.json'];
+const CACHE = 'life-qa-v3';
+// 相對路徑：在本機根目錄與 GitHub Pages 子路徑（/life/）皆正確
+const STATIC = ['./', './index.html', './app.js', './style.css', './icon.svg', './icon-maskable.svg', './manifest.json'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(STATIC)));
@@ -37,7 +38,7 @@ self.addEventListener('notificationclick', e => {
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then(cs => {
       const existing = cs.find(c => c.url.includes(self.location.origin));
       if (existing) return existing.focus();
-      return clients.openWindow('/');
+      return clients.openWindow('./');
     })
   );
 });
