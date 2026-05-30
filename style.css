@@ -2110,6 +2110,9 @@ body {
   /* Main */
   .main { padding: 12px 14px; }
 
+  /* Grid/list toggle is meaningless on a narrow screen (always single column) */
+  .view-toggle { display: none; }
+
   /* Cards grid — single column */
   .qa-grid { grid-template-columns: 1fr !important; gap: 10px; }
 
