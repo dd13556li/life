@@ -2227,8 +2227,6 @@ body {
   .bottom-nav { display: flex; }
   /* leave room so content clears the fixed bar */
   .main { padding-bottom: calc(74px + env(safe-area-inset-bottom, 0px)); }
-  /* hide the redundant header hamburger — bottom nav has 選單 */
-  .sidebar-toggle-btn { display: none; }
   /* install banner sits above the bottom nav */
   .install-banner { bottom: calc(74px + env(safe-area-inset-bottom, 0px)); }
 }
