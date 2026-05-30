@@ -5715,6 +5715,21 @@ function setView(mode) {
   renderGrid();
 }
 
+// ── Display zoom (remembered per device) ──────────────────────
+function applyZoom() {
+  let z = parseFloat(localStorage.getItem('life_zoom'));
+  if (!z || z < 0.5 || z > 2) z = 1;
+  document.documentElement.style.zoom = z;
+  document.querySelectorAll('.zoom-btn').forEach(b => {
+    b.classList.toggle('active', Math.abs(parseFloat(b.dataset.zoom) - z) < 0.001);
+  });
+}
+
+function setZoom(z) {
+  localStorage.setItem('life_zoom', String(z));
+  applyZoom();
+}
+
 // ── View modal ─────────────────────────────────────────────────
 function openView(id) {
   const item = state.qaList.find(q => q.id === id);
@@ -5890,6 +5905,7 @@ function openSettings() {
   if (state.settings.googleClientId) {
     document.getElementById('sDriveAuthBtn').textContent = '重新授權';
   }
+  applyZoom();
   document.getElementById('settingsModal').style.display = 'flex';
   lockScroll(true);
 }
@@ -7573,6 +7589,7 @@ function checkSRSNotification() {
 
 // ── Init ───────────────────────────────────────────────────────
 loadFromStorage();
+applyZoom();
 renderCategories();
 renderPaths();
 renderGrid();
