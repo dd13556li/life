@@ -23,3 +23,10 @@ desktop.ini
 .idea/
 *.swp
 *.swo
+
+# Handwritten note source images (kept local only, not versioned)
+images/
+images2/
+
+# Local test screenshots
+_m_*.png
