@@ -84,7 +84,7 @@
 - [x] 情緒與本能（11張，2026-06-11：em1-em7,emotion_evolution,emotion_ai_view,ai17,emotion_mechanism）
 - [x] 憤怒與不滿（11張，2026-06-11：an1-an6,stoic_anger,nvc_anger,buddhist_anger,ai11,anger_neuroscience）
 - [x] 焦慮與不安（10張，2026-06-11：ax1-ax6,buddhist_anxiety,existential_anxiety,cbt_anxiety,ai12）
-- [ ] 羨慕與嫉妒
+- [x] 羨慕與嫉妒（10張，2026-06-11：ev1-ev6,envy_philosophy,envy_culture,ai18,envy_evolution）
 - [ ] 人機之際
 - [ ] 正念練習
 - [ ] 頂空冥想
