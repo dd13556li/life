@@ -83,7 +83,7 @@
 - [x] 知行合一（14張，2026-06-11：kh1,kh2,kh3,kh4,ai10,bio_wangym,mbsr_guide,stoic_daily,philosophical_counseling,bio_thich,bio_socrates,bio_james,somatic_wisdom,habit_science）
 - [x] 情緒與本能（11張，2026-06-11：em1-em7,emotion_evolution,emotion_ai_view,ai17,emotion_mechanism）
 - [x] 憤怒與不滿（11張，2026-06-11：an1-an6,stoic_anger,nvc_anger,buddhist_anger,ai11,anger_neuroscience）
-- [ ] 焦慮與不安
+- [x] 焦慮與不安（10張，2026-06-11：ax1-ax6,buddhist_anxiety,existential_anxiety,cbt_anxiety,ai12）
 - [ ] 羨慕與嫉妒
 - [ ] 人機之際
 - [ ] 正念練習
