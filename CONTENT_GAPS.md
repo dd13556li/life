@@ -73,7 +73,7 @@
 每張卡新增三個**選填**欄位：`quote` + `quoteSource`（金句原典，必須是可查證的原句）、`counterpoint`（換個角度想，80–140字，對卡片論點最有力的質疑）、`prompts`（反思提問，2–3 題，比 practice 更內省、不要求行動）。新增分類時三欄位視為必填；舊分類分批回填。
 
 - [x] 存在與意義（15張，2026-06-10 示範完成）
-- [ ] 幸福與快樂
+- [x] 幸福與快樂（14張，2026-06-10：s3,s4,f3,f4,ik1,ai2,bio_aristotle,bio_csik,sufi_contentment,bio_seligman,bio_kahneman,hygge_life,positive_psych_practice,positive_emotions）
 - [ ] 愛與關係
 - [ ] 死亡與無常
 - [ ] 自我與認同
