@@ -77,7 +77,7 @@
 - [x] 愛與關係（13張，2026-06-10：s5,r2,s6,r4,ai3,bio_gottman,bio_fromm,greek_love,bio_rogers,bio_rilke,bio_buber,nvc_guide,attachment_theory）
 - [x] 死亡與無常（14張，2026-06-10：s8,s7,d3,d4,ai4,in1,bio_marcus,tibet_death,bio_epicurus,zhuangzi_death,kubler_ross_grief,global_mourning_rituals,dignified_dying,digital_legacy）
 - [x] 自我與認同（13張，2026-06-10：s9,s10,i3,i4,td1,ai5,bio_dweck,bio_laozi,bio_neff,bio_beauvoir,bio_adler,shadow_work,bio_freud）
-- [ ] 道德與倫理
+- [x] 道德與倫理（17張，2026-06-10：s11,m2,s12,m4,ai6,bio_singer,confucian_ren,bio_confucius,bio_parfit,islamic_ethics,bio_mandela,feminist_ethics,karma_dharma,bio_kant,bio_mill,bio_rawls,moral_emotions）
 - [ ] 心經與智慧
 - [ ] 苦難與療癒
 - [ ] 知行合一
