@@ -81,7 +81,7 @@
 - [x] 心經與智慧（12張，2026-06-10：h6,h1,h3,h2,h4,h5,h7,ai7,bio_jung,bio_huineng,wisdom_traditions,bio_dogen）
 - [x] 苦難與療癒（17張，2026-06-11：th1,th2,th3,th4,why_we_suffer,suffering_necessary,ai9,bio_epictetus,bio_nietzsche,eco_grief,bio_rumi,bio_macy,jewish_wisdom,bio_seneca,bibliotherapy,yalom_existential,bio_schopenhauer）
 - [x] 知行合一（14張，2026-06-11：kh1,kh2,kh3,kh4,ai10,bio_wangym,mbsr_guide,stoic_daily,philosophical_counseling,bio_thich,bio_socrates,bio_james,somatic_wisdom,habit_science）
-- [ ] 情緒與本能
+- [x] 情緒與本能（11張，2026-06-11：em1-em7,emotion_evolution,emotion_ai_view,ai17,emotion_mechanism）
 - [ ] 憤怒與不滿
 - [ ] 焦慮與不安
 - [ ] 羨慕與嫉妒
