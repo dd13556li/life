@@ -88,7 +88,7 @@
 - [x] 人機之際（13張，2026-06-11：mirror_humanity,ai13,companionship,anthropomorphism,machine_mind,ai14,algorithmic_choice,creative_attribution,algorithmic_bias,responsibility_gap,privacy,governing_ai,human_ai_future）
 - [x] 正念練習（12張，2026-06-11：mind1-mind9,breathing_space,decentering,ai15）
 - [x] 頂空冥想（11張，2026-06-11：hs1-hs8,bio_andy,mindful_living_ten,ai16）
-- [ ] 意識
+- [x] 意識（10張，2026-06-11：con1-con6,consciousness_theories,embodied_consciousness,bio_chalmers,ai19）
 - [ ] 人生方向與自我實現
 - [ ] AI的本質與未來
 - [ ] 神與宗教哲學
