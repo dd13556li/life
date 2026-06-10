@@ -140,10 +140,18 @@
       </div>
       <div id="vmCategory" class="modal-category"></div>
       <h2 id="vmQuestion" class="modal-question"></h2>
+      <blockquote id="vmQuote" class="modal-quote" style="display:none">
+        <p id="vmQuoteText" class="modal-quote-text"></p>
+        <cite id="vmQuoteSource" class="modal-quote-source"></cite>
+      </blockquote>
       <div id="vmAnswer" class="modal-answer"></div>
       <div id="vmScience" class="modal-section" style="display:none">
         <div class="modal-section-label">⚗ 科學視角</div>
         <div id="vmScienceContent" class="modal-section-content"></div>
+      </div>
+      <div id="vmCounterpoint" class="modal-section" style="display:none">
+        <div class="modal-section-label counterpoint">◐ 換個角度想</div>
+        <div id="vmCounterpointContent" class="modal-section-content counterpoint"></div>
       </div>
       <div id="vmPractice" class="modal-section" style="display:none">
         <div class="modal-section-label practice">◈ 今日實踐</div>
@@ -152,6 +160,7 @@
       </div>
       <div class="modal-section">
         <div class="modal-section-label journal">✎ 我的反思</div>
+        <div id="vmPrompts" class="reflect-prompts" style="display:none"></div>
         <div id="vmJournalList"></div>
         <textarea id="vmJournalInput" class="journal-textarea" rows="3" placeholder="寫下今天讀到這篇之後的想法、感受或觀察..."></textarea>
         <button class="btn-journal-save" onclick="saveJournalEntry()">記錄反思</button>
@@ -216,16 +225,34 @@
           <option>意識</option>
           <option>人生方向與自我實現</option>
           <option>AI的本質與未來</option>
+          <option>神與宗教哲學</option>
+          <option>宇宙與存在</option>
           <option>其他</option>
         </select>
+      </div>
+      <div class="form-group">
+        <label><span>金句原典</span> <span class="label-optional">（選填）</span></label>
+        <textarea id="fQuote" rows="2" placeholder="一句可背誦的原典引文..."></textarea>
+      </div>
+      <div class="form-group">
+        <label><span>金句出處</span> <span class="label-optional">（選填）</span></label>
+        <input type="text" id="fQuoteSource" placeholder="例如：馬可．奧理略《沉思錄》">
       </div>
       <div class="form-group">
         <label><span>科學視角</span> <span class="label-optional">（選填）</span></label>
         <textarea id="fScience" rows="3" placeholder="相關研究、實驗或科學根據..."></textarea>
       </div>
       <div class="form-group">
+        <label><span>換個角度想</span> <span class="label-optional">（選填）</span></label>
+        <textarea id="fCounterpoint" rows="3" placeholder="對這張卡論點最有力的質疑或反方觀點..."></textarea>
+      </div>
+      <div class="form-group">
         <label><span>今日實踐</span> <span class="label-optional">（選填）</span></label>
         <textarea id="fPractice" rows="3" placeholder="具體可操作的日常練習建議..."></textarea>
+      </div>
+      <div class="form-group">
+        <label><span>反思提問</span> <span class="label-optional">（選填，每行一題，2-3 題）</span></label>
+        <textarea id="fPrompts" rows="3" placeholder="引導內省的提問，一行一題..."></textarea>
       </div>
       <div class="form-group">
         <label class="label-with-action">

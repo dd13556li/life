@@ -600,6 +600,32 @@ body {
   padding-left: 20px;
 }
 
+.modal-quote {
+  margin: 0 0 26px;
+  padding: 18px 22px;
+  background: var(--surface2);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--gold);
+}
+
+.modal-quote-text {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  color: var(--gold);
+  line-height: 1.9;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.modal-quote-source {
+  display: block;
+  margin-top: 10px;
+  font-size: 12px;
+  font-style: normal;
+  color: var(--text-dim);
+  text-align: right;
+}
+
 .modal-footer {
   display: flex;
   align-items: center;
@@ -816,6 +842,7 @@ body {
 }
 
 .modal-section-label.practice { color: #5dba7e; }
+.modal-section-label.counterpoint { color: #c98a5d; }
 
 .modal-section-content {
   font-size: 14px;
@@ -827,6 +854,34 @@ body {
 }
 
 .modal-section-content.practice { border-left-color: #1e5a38; }
+.modal-section-content.counterpoint { border-left-color: #5e3a1e; }
+
+/* ── Reflection prompts in card modal ── */
+.reflect-prompts {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.reflect-prompt-btn {
+  text-align: left;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.7;
+  cursor: pointer;
+  transition: border-color var(--transition), color var(--transition);
+}
+
+.reflect-prompt-btn:hover {
+  border-color: #9b8ec4;
+  color: var(--text);
+}
 
 /* ── Journal in card modal ── */
 .modal-section-label.journal { color: #9b8ec4; }

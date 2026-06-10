@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE = 'life-qa-v3';
+const CACHE = 'life-qa-v4';
 // 相對路徑：在本機根目錄與 GitHub Pages 子路徑（/life/）皆正確
 const STATIC = ['./', './index.html', './app.js', './style.css', './icon.svg', './icon-maskable.svg', './manifest.json'];
 
