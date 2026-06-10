@@ -85,7 +85,7 @@
 - [x] 憤怒與不滿（11張，2026-06-11：an1-an6,stoic_anger,nvc_anger,buddhist_anger,ai11,anger_neuroscience）
 - [x] 焦慮與不安（10張，2026-06-11：ax1-ax6,buddhist_anxiety,existential_anxiety,cbt_anxiety,ai12）
 - [x] 羨慕與嫉妒（10張，2026-06-11：ev1-ev6,envy_philosophy,envy_culture,ai18,envy_evolution）
-- [ ] 人機之際
+- [x] 人機之際（13張，2026-06-11：mirror_humanity,ai13,companionship,anthropomorphism,machine_mind,ai14,algorithmic_choice,creative_attribution,algorithmic_bias,responsibility_gap,privacy,governing_ai,human_ai_future）
 - [ ] 正念練習
 - [ ] 頂空冥想
 - [ ] 意識
