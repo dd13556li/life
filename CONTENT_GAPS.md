@@ -86,7 +86,7 @@
 - [x] 焦慮與不安（10張，2026-06-11：ax1-ax6,buddhist_anxiety,existential_anxiety,cbt_anxiety,ai12）
 - [x] 羨慕與嫉妒（10張，2026-06-11：ev1-ev6,envy_philosophy,envy_culture,ai18,envy_evolution）
 - [x] 人機之際（13張，2026-06-11：mirror_humanity,ai13,companionship,anthropomorphism,machine_mind,ai14,algorithmic_choice,creative_attribution,algorithmic_bias,responsibility_gap,privacy,governing_ai,human_ai_future）
-- [ ] 正念練習
+- [x] 正念練習（12張，2026-06-11：mind1-mind9,breathing_space,decentering,ai15）
 - [ ] 頂空冥想
 - [ ] 意識
 - [ ] 人生方向與自我實現
