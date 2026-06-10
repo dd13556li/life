@@ -79,7 +79,7 @@
 - [x] 自我與認同（13張，2026-06-10：s9,s10,i3,i4,td1,ai5,bio_dweck,bio_laozi,bio_neff,bio_beauvoir,bio_adler,shadow_work,bio_freud）
 - [x] 道德與倫理（17張，2026-06-10：s11,m2,s12,m4,ai6,bio_singer,confucian_ren,bio_confucius,bio_parfit,islamic_ethics,bio_mandela,feminist_ethics,karma_dharma,bio_kant,bio_mill,bio_rawls,moral_emotions）
 - [x] 心經與智慧（12張，2026-06-10：h6,h1,h3,h2,h4,h5,h7,ai7,bio_jung,bio_huineng,wisdom_traditions,bio_dogen）
-- [ ] 苦難與療癒
+- [x] 苦難與療癒（17張，2026-06-11：th1,th2,th3,th4,why_we_suffer,suffering_necessary,ai9,bio_epictetus,bio_nietzsche,eco_grief,bio_rumi,bio_macy,jewish_wisdom,bio_seneca,bibliotherapy,yalom_existential,bio_schopenhauer）
 - [ ] 知行合一
 - [ ] 情緒與本能
 - [ ] 憤怒與不滿
