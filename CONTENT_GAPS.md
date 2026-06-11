@@ -90,7 +90,7 @@
 - [x] 頂空冥想（11張，2026-06-11：hs1-hs8,bio_andy,mindful_living_ten,ai16）
 - [x] 意識（10張，2026-06-11：con1-con6,consciousness_theories,embodied_consciousness,bio_chalmers,ai19）
 - [x] 人生方向與自我實現（10張，2026-06-11：sr1-sr6,kegan_development,self_transcendence,bio_kegan,ai20）
-- [ ] AI的本質與未來
+- [x] AI的本質與未來（10張，2026-06-11：anf1-anf6,bostrom_convergence,extended_mind,bio_turing,ai21）
 - [ ] 神與宗教哲學
 - [ ] 宇宙與存在
 - [ ] 其他
