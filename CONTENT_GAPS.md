@@ -68,9 +68,9 @@
 
 ---
 
-## 三個新內容欄位回填進度（2026-06-10 新增）
+## 三個新內容欄位回填進度（2026-06-10 新增）✅ 全部完成（2026-06-11，22/22 分類，267/267 張）
 
-每張卡新增三個**選填**欄位：`quote` + `quoteSource`（金句原典，必須是可查證的原句）、`counterpoint`（換個角度想，80–140字，對卡片論點最有力的質疑）、`prompts`（反思提問，2–3 題，比 practice 更內省、不要求行動）。新增分類時三欄位視為必填；舊分類分批回填。
+每張卡新增三個**選填**欄位：`quote` + `quoteSource`（金句原典，必須是可查證的原句）、`counterpoint`（換個角度想，80–140字，對卡片論點最有力的質疑）、`prompts`（反思提問，2–3 題，比 practice 更內省、不要求行動）。新增分類時三欄位視為必填。
 
 - [x] 存在與意義（15張，2026-06-10 示範完成）
 - [x] 幸福與快樂（14張，2026-06-10：s3,s4,f3,f4,ik1,ai2,bio_aristotle,bio_csik,sufi_contentment,bio_seligman,bio_kahneman,hygge_life,positive_psych_practice,positive_emotions）
@@ -93,6 +93,6 @@
 - [x] AI的本質與未來（10張，2026-06-11：anf1-anf6,bostrom_convergence,extended_mind,bio_turing,ai21）
 - [x] 神與宗教哲學（10張，2026-06-11：god1-god6,jung_divine,religious_experience,secular_humanism,ai22）
 - [x] 宇宙與存在（10張，2026-06-11：cos1-cos6,bio_sagan,multiverse_philosophy,stoic_cosmos,ai23）
-- [ ] 其他
+- [x] 其他（10張，2026-06-11：o1-o6,ai8,ai_existential,philosophy_science,cross_cultural_wisdom）
 
 > 寫作要點：金句寧缺勿錯（查證不到原句就留空）；counterpoint 引真實學者批評（如內格爾批卡繆、卡納普批海德格爾、Frazier 批 PTG）；prompts 第一人稱提問、可直接點擊帶入反思輸入框。
