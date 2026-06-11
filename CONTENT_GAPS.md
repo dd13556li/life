@@ -92,7 +92,7 @@
 - [x] 人生方向與自我實現（10張，2026-06-11：sr1-sr6,kegan_development,self_transcendence,bio_kegan,ai20）
 - [x] AI的本質與未來（10張，2026-06-11：anf1-anf6,bostrom_convergence,extended_mind,bio_turing,ai21）
 - [x] 神與宗教哲學（10張，2026-06-11：god1-god6,jung_divine,religious_experience,secular_humanism,ai22）
-- [ ] 宇宙與存在
+- [x] 宇宙與存在（10張，2026-06-11：cos1-cos6,bio_sagan,multiverse_philosophy,stoic_cosmos,ai23）
 - [ ] 其他
 
 > 寫作要點：金句寧缺勿錯（查證不到原句就留空）；counterpoint 引真實學者批評（如內格爾批卡繆、卡納普批海德格爾、Frazier 批 PTG）；prompts 第一人稱提問、可直接點擊帶入反思輸入框。
