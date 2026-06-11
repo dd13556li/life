@@ -91,7 +91,7 @@
 - [x] 意識（10張，2026-06-11：con1-con6,consciousness_theories,embodied_consciousness,bio_chalmers,ai19）
 - [x] 人生方向與自我實現（10張，2026-06-11：sr1-sr6,kegan_development,self_transcendence,bio_kegan,ai20）
 - [x] AI的本質與未來（10張，2026-06-11：anf1-anf6,bostrom_convergence,extended_mind,bio_turing,ai21）
-- [ ] 神與宗教哲學
+- [x] 神與宗教哲學（10張，2026-06-11：god1-god6,jung_divine,religious_experience,secular_humanism,ai22）
 - [ ] 宇宙與存在
 - [ ] 其他
 
