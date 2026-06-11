@@ -89,7 +89,7 @@
 - [x] 正念練習（12張，2026-06-11：mind1-mind9,breathing_space,decentering,ai15）
 - [x] 頂空冥想（11張，2026-06-11：hs1-hs8,bio_andy,mindful_living_ten,ai16）
 - [x] 意識（10張，2026-06-11：con1-con6,consciousness_theories,embodied_consciousness,bio_chalmers,ai19）
-- [ ] 人生方向與自我實現
+- [x] 人生方向與自我實現（10張，2026-06-11：sr1-sr6,kegan_development,self_transcendence,bio_kegan,ai20）
 - [ ] AI的本質與未來
 - [ ] 神與宗教哲學
 - [ ] 宇宙與存在
